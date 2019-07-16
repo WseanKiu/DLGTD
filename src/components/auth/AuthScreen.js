@@ -18,14 +18,15 @@ export default class AuthLoadingScreen extends React.Component {
         const userToken = await AsyncStorage.getItem('userToken');
 
         // This will switch to the App screen or Auth screen
-        this.props.navigation.navigate(userToken? 'App' : 'Auth');
+        // this.props.navigation.navigate(userToken? 'App' : 'Auth');
+        this.props.navigation.navigate(userToken? 'App' : 'App');
     };
 
     // Render any loading content that you like here
     render() {
         return (
             <View style={style.container}>
-                <ActivityIndicator />
+                <ActivityIndicator size="large" color="#0000ff" />
                 <StatusBar barStyle="default" />
             </View>
         );

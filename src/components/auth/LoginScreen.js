@@ -6,18 +6,56 @@ import {
     TextInput,
     Button,
     TouchableHighlight,
+    AsyncStorage,
     Image,
     Alert
-  } from 'react-native';
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
-        state = {
+        this.state = {
             username: '',
             password: '',
-        }
+        };
     }
+
+    authLogin = () => {
+        const { username } = this.state;
+        const { password } = this.state;
+
+        fetch('http://192.168.254.109/dlgtd/controller/loginController.php', {
+            method: 'post',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'applicantion/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            })
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if(responseJson.error === false) {
+                    this._setDataAsync();
+                    this.props.navigation.navigate('App');
+                } else {
+                    alert(responseJson.error);
+                }
+            })
+            .catch((error) => {
+                alert(error);
+                // console.error(error);
+            });
+    }
+
+    _setDataAsync = async () => {
+        await AsyncStorage.setItem('username', this.state.username);
+        await AsyncStorage.setItem('password', this.state.password);
+        await AsyncStorage.setItem('userToken', 'App');
+    };
 
     onClickListener = (viewId) => {
         Alert.alert("Alert", "button pressed" + viewId);
@@ -27,16 +65,18 @@ export default class LoginScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.inputContainer}>
-                    <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/message/ultraviolet/50/3498db' }} />
+                    {/* <Icon name="person" size={25} /> */}
+                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/message/ultraviolet/50/3498db' }} /> */}
                     <TextInput style={styles.inputs}
-                        placeholder="Email"
+                        placeholder="username"
                         keyboardType="email-address"
                         underlineColorAndroid='transparent'
-                        onChangeText={(email) => this.setState({ email })} />
+                        onChangeText={(username) => this.setState({ username })} />
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} />
+                    {/* <Icon name="vpn_key" size={25} /> */}
+                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} /> */}
                     <TextInput style={styles.inputs}
                         placeholder="Password"
                         secureTextEntry={true}
@@ -44,7 +84,7 @@ export default class LoginScreen extends React.Component {
                         onChangeText={(password) => this.setState({ password })} />
                 </View>
 
-                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('login')}>
+                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this.authLogin}>
                     <Text style={styles.loginText}>Login</Text>
                 </TouchableHighlight>
 
@@ -66,13 +106,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#DCDCDC',
+        // backgroundColor: '#ffffff',
     },
     inputContainer: {
         borderBottomColor: '#F5FCFF',
         backgroundColor: '#FFFFFF',
         borderRadius: 30,
         borderBottomWidth: 1,
-        width: 250,
+        width: 260,
         height: 45,
         marginBottom: 20,
         flexDirection: 'row',
@@ -95,14 +136,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
-        width: 250,
+        marginBottom: 1,
+        width: 260,
         borderRadius: 30,
     },
     loginButton: {
+        color: '#ffffff',
         backgroundColor: "#00b5ec",
+        height: 45,
+        width: 260,
+        borderRadius: 30,
     },
     loginText: {
-        color: 'white',
+        color: '#ffffff',
     }
 });
