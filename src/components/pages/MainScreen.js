@@ -8,17 +8,69 @@ import {
     View,
     Image,
     TouchableOpacity,
+    ScrollView,
     FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import styles from '../styles/style';
 import DlgtdLogo from '../../assets/logo/DlgtdLogo';
+import TaskContainer from '../helpers/TaskContainer';
+import FloatingAddButton from '../helpers/FloatingAddButton';
 
 class MainScreen extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            username: null
+            username: null,
+            taskContainer: [
+                {
+                    key: 1,
+                    title: "testing 123",
+                    desc: "yeee haaaa",
+                },
+                {
+                    key: 2,
+                    title: "hello, world!",
+                    desc: "dont let nobody steal your dream.",
+                },{
+                    key: 1,
+                    title: "testing 123",
+                    desc: "yeee haaaa",
+                },
+                {
+                    key: 2,
+                    title: "hello, world!",
+                    desc: "dont let nobody steal your dream.",
+                },{
+                    key: 1,
+                    title: "testing 123",
+                    desc: "yeee haaaa",
+                },
+                {
+                    key: 2,
+                    title: "hello, world!",
+                    desc: "dont let nobody steal your dream.",
+                },{
+                    key: 1,
+                    title: "testing 123",
+                    desc: "yeee haaaa",
+                },
+                {
+                    key: 2,
+                    title: "hello, world!",
+                    desc: "dont let nobody steal your dream.",
+                },{
+                    key: 1,
+                    title: "testing 123",
+                    desc: "yeee haaaa",
+                },
+                {
+                    key: 2,
+                    title: "hello, world!",
+                    desc: "dont let nobody steal your dream.",
+                },
+            ],
         }
         this._getAsyncData();
     }
@@ -64,62 +116,27 @@ class MainScreen extends React.Component {
     }
 
     render() {
+
+        let tasks = this.state.taskContainer.map((val, key) => {
+            return <TaskContainer key={key} keyval={key} val={val}
+            viewMethod={ ()=> this.viewTask(key) }/>
+        });
+
+
         return (
             <View style={styles.container}>
-                {/* <View style={styles.navBar}>
-                    <TouchableOpacity>
-                        <Image
-                            source={require('../../assets/logo/yt_logo.png')}
-                            style={{ width: 98, height: 22 }}
-                        />
-                    </TouchableOpacity>
-                    <View style={styles.rightNav}>
-                        <TouchableOpacity onPress={this.displaythings}>
-                            <Icon style={styles.navItem} name="search" size={25} />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Icon style={styles.navItem} name="account-circle" size={25} />
-                        </TouchableOpacity>
-                    </View>
-                </View> */}
-                <Text style={styles.text}>Hello, World!</Text>
+                <ScrollView style={styles.scrollContainer}>
+                    {tasks}
+                </ScrollView>
+                <FloatingAddButton navigation={this.props.navigation}/>
             </View>
         )
     }
+
+    viewTask(key) {
+        alert("task key:" + key);
+    }
 }
 
-export default MainScreen
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#c0392b',
-        padding: 20,
-    },
-    text: {
-        color: 'white',
-        fontSize: 40,
-        fontWeight: 'bold',
-    },
-    navLeftItem: {
-        marginLeft: 15
-    },
-    navBar: {
-        height: 55,
-        backgroundColor: 'white',
-        elevation: 3,
-        paddingHorizontal: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    rightNav: {
-        flexDirection: 'row'
-    },
-    navItem: {
-        marginRight: 15
-    },
-});
+export default MainScreen;
 

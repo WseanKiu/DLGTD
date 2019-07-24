@@ -4,7 +4,9 @@ import {
     createBottomTabNavigator,
     createDrawerNavigator,
     createSwitchNavigator,
-    createAppContainer } from 'react-navigation';
+    createAppContainer
+} from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import AuthScreen from './src/components/auth/AuthScreen';
 import MainScreen from './src/components/pages/MainScreen';
@@ -32,14 +34,32 @@ const Tabs = createBottomTabNavigator(
         GroupTask: { screen: GroupStack }
     },
     {
-        order: ['Main', 'GroupTask']
+        defaultNavigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ focused, horizontal, tintColor }) => {
+                const { routeName } = navigation.state;
+                let IconComponent = Icon;
+                let iconName;
+
+                if (routeName === 'Main') {
+                    iconName = `tasks`;
+                } else if (routeName === 'GroupTask') {
+                    iconName = `group`;
+                }
+
+                return <IconComponent name={iconName} size={20} color={tintColor} />;
+            },
+        }),
+        tabBarOptions: {
+            activeTintColor: 'tomato',
+            inactiveTintColor: 'gray',
+        },
     }
 );
 
 const Drawer = createDrawerNavigator(
     {
         Tabs: { screen: Tabs },
-        GroupStack: { screen: GroupStack }        
+        GroupStack: { screen: GroupStack }
     }
 );
 
