@@ -24,8 +24,12 @@ export default class LoginScreen extends React.Component {
     authLogin = () => {
         const { username } = this.state;
         const { password } = this.state;
-
-        fetch('http://192.168.254.109/dlgtd/controller/loginController.php', {
+        const server_ip = (async () => {
+            await AsyncStorage.getItem('server_ip');
+        } ) ();
+        
+        // fetch('http://' + server_ip + '/dlgtd/controller/loginController.php', {
+        fetch('http://192.168.254.108/dlgtd/controller/loginController.php', {
             method: 'post',
             header: {
                 'Accept': 'application/json',
@@ -42,7 +46,7 @@ export default class LoginScreen extends React.Component {
                     this._setDataAsync();
                     this.props.navigation.navigate('App');
                 } else {
-                    alert(responseJson.error);
+                    alert(responseJson.msg);
                 }
             })
             .catch((error) => {
