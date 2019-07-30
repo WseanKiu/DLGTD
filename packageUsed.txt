@@ -1,0 +1,3 @@
+Datetime picker:
+$ npm install react-native-datepicker --save
+$ npm install react-native-ui-xg --save

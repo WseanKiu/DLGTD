@@ -16,7 +16,6 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/style';
 import DlgtdLogo from '../../assets/logo/DlgtdLogo';
-import TaskContainer from '../helpers/TaskContainer';
 import FloatingAddButton from '../helpers/FloatingAddButton';
 
 class MainScreen extends React.Component {
@@ -61,9 +60,6 @@ class MainScreen extends React.Component {
     };
 
     componentDidMount() {
-        // const server_ip = (async () => {
-        //     return await AsyncStorage.getItem('server_ip');
-        // } ) ();
 
         setTimeout(() => {
             const url = 'http://' + this.state.ip_server + '/dlgtd/controller/getUserTaskController.php';
@@ -80,7 +76,7 @@ class MainScreen extends React.Component {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     this.setState({
-                        dataSource: responseJson.items,
+                        taskContainer: responseJson.items,
                         isLoading: false
                     })
                 })
@@ -116,13 +112,33 @@ class MainScreen extends React.Component {
         this.setState({
             ip_server: server_ip
         });
-        alert("qwewq" + server_ip);
     };
 
     displaythings = () => {
         this._getAsyncData();
         // alert(this.state.username);
     }
+
+    render() {
+        return (
+            this.state.isLoading
+            ?
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#000000" animating />
+            </View>
+            :
+            <View style={styles.container}>
+                <FloatingAddButton navigation={this.props.navigation}/>
+                <FlatList
+                    data={this.state.taskContainer}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item, index) => index}
+                    ItemSeparatorComponent={this.renderSeparator}
+                />
+            </View>
+        );
+    }
+
 
     // render() {
 
@@ -141,27 +157,6 @@ class MainScreen extends React.Component {
     //         </View>
     //     )
     // }
-
-    render() {
-        return (
-            this.state.isLoading
-            ?
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#000000" animating />
-            </View>
-            :
-            <View style={styles.container}>
-                <FlatList
-                    data={this.state.dataSource}
-                    renderItem={this.renderItem}
-                    keyExtractor={(item, index) => index}
-                    ItemSeparatorComponent={this.renderSeparator}
-                />
-            <FloatingAddButton navigation={this.props.navigation}/>
-            </View>
-        );
-    }
-
     viewTask(key) {
         alert("task key:" + key);
     }

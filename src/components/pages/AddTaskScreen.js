@@ -1,13 +1,20 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-    View, 
-    Text, 
+    Platform,
+    ActivityIndicator,
+    View,
+    Text,
+    Button,
     StyleSheet,
     ScrollView,
     AsyncStorage,
-    TouchableOpacity, 
+    TouchableOpacity,
     TextInput,
+    DatePickerAndroid,
+    DatePickerIOS,
 } from 'react-native';
+import DatePicker from 'react-native-datepicker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class AddTaskScreen extends Component {
 
@@ -17,19 +24,45 @@ class AddTaskScreen extends Component {
             server_ip: '',
             task_name: '',
             task_description: '',
+            isLoading: false,
+            due_date: '',
+            dateText: 'Pick a date',
+            present_date: '',
         }
         this._getAsyncData();
     }
 
     static navigationOptions = {
         title: "add task"
-    };
+    }
+
+    componentDidMount() {
+        var day = new Date();
+        var temp = day.getFullYear() +
+            '-' + (day.getMonth() + 1) +
+            '-' + day.getDate() +
+            ' ' + day.getHours() +
+            ':' + day.getMinutes();
+        this.setState({ present_date: temp });
+        alert(temp);
+    }
 
     checkInputs = () => {
+        this.setState({ isLoading: true });
+        if(this.state.task_name == '') {
+            alert('Title must be filled!');
+            this.setState({ isLoading: false });
+        } else {
+            this.addUserTask();
+        }
+    }
+
+    addUserTask = () => {
+
         const { task_name } = this.state;
         const { task_description } = this.state;
+        const { due_date } = this.state;
 
-        // alert(task_name + task_description + this.state.server_ip);
         const url = 'http://' + this.state.server_ip + '/dlgtd/controller/addTaskController.php';
 
         fetch(url, {
@@ -41,19 +74,20 @@ class AddTaskScreen extends Component {
             body: JSON.stringify({
                 user_id: 4,
                 task_name: task_name,
-                task_description: task_description
+                task_description: task_description,
+                task_dueDate: due_date
             })
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                if(responseJson.error === false) {
+                if (responseJson.error === false) {
                     this.props.navigation.navigate('Main');
                 } else {
                     alert(responseJson.msg);
                 }
             })
             .catch((error) => {
-                alert(error + url);
+                alert(error);
             })
     }
 
@@ -63,32 +97,61 @@ class AddTaskScreen extends Component {
     };
 
     render() {
-        return(
-            <ScrollView>
-                <View style={styles.container}>
-                    <View style={styles.formContainer}>
-                    <Text style={styles.textLabel}>Title</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Title"
-                        onChangeText={(task_name) => this.setState({ task_name })} 
-                    />
-                    
-                    <Text style={styles.textLabel}>Description</Text>
-                    <TextInput
-                        style={styles.textInputChildren}
-                        placeholder="Description"
-                        onChangeText={(task_description) => this.setState({ task_description })} 
-                    />
+        return (
+            this.state.isLoading ?
+                (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#000000" animating />
+                </View>)
+                :
+                (<ScrollView>
+                    <View style={styles.container}>
+                        <View style={styles.formContainer}>
+                            <Text style={styles.textLabel}>Title</Text>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Title"
+                                onChangeText={(task_name) => this.setState({ task_name })}
+                            />
+
+                            <Text style={styles.textLabel}>Description</Text>
+                            <TextInput
+                                style={styles.textInputChildren}
+                                placeholder="Description"
+                                onChangeText={(task_description) => this.setState({ task_description })}
+                            />
+                            <Text style={styles.textLabel}>Due date</Text>
+
+                            <DatePicker
+                                style={{ width: 200 }}
+                                date={this.state.due_date}
+                                mode="datetime"
+                                placeholder={this.state.dateText}
+                                format="YYYY-MM-DD HH:mm"
+                                minDate={this.state.present_date}
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        marginLeft: 36
+                                    }
+                                }}
+                                minuteInterval={10}
+                                onDateChange={(due_date) => { this.setState({ due_date: due_date }); }}
+                            />
+                        </View>
+                        <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={this.checkInputs}>
+                            <Text style={styles.saveButtonText}>Save</Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={this.checkInputs}
-                        >
-                        <Text style={styles.saveButtonText}>Save</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                </ScrollView>)
         );
     }
 }
@@ -143,5 +206,37 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 20,
         textAlign: 'center'
-    }
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        alignContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    Date_Button: {
+        flex: 1,
+        borderBottomWidth: 1,
+        borderColor: '#3d4659',
+        paddingLeft: 10,
+        paddingRight: 10,
+        marginLeft: 10,
+        marginTop: 10,
+    },
 });
+
+// {
+//                                 Platform.OS === 'android' ?
+//                                     (
+//                                         <TouchableOpacity
+//                                             style={styles.rowContainer}
+//                                             onPress={() => this.showDatePicker({ date: this.state.date })} >
+//                                             <Ionicons name="md-calendar" size={35} />
+//                                             <Text style={styles.Date_Button}>{this.state.dateText}</Text>
+//                                         </TouchableOpacity>
+//                                     )
+//                                     :
+//                                     <DatePickerIOS
+//                                         date={this.state.date}
+//                                         onDateChange={this.setDate} />
+//                             }
