@@ -15,6 +15,8 @@ export default StyleSheet.create({
     //BODY
     container: {
         flex: 1,
+        alignItems: 'center',
+        alignContent: 'center',
     },    
     scrollContainer: {
         flex: 1,

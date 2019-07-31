@@ -13,10 +13,12 @@ import MainScreen from './src/components/pages/MainScreen';
 import LoginScreen from './src/components/auth/LoginScreen';
 import AddTaskScreen from './src/components/pages/AddTaskScreen';
 import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
+import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
 
 const AppStack = createStackNavigator(
     {
         Main: { screen: MainScreen },
+        ViewTask: { screen: ViewTaskScreen },
         AddTask: { screen: AddTaskScreen }
     }
 );

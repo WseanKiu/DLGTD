@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/style';
 import DlgtdLogo from '../../assets/logo/DlgtdLogo';
 import FloatingAddButton from '../helpers/FloatingAddButton';
+import Bar from 'react-native-progress/Bar';
 
 class MainScreen extends React.Component {
 
@@ -88,12 +89,17 @@ class MainScreen extends React.Component {
     }
 
     renderItem = ({ item }) => {
+        const task_id = item.task_id;
         return (
             <TouchableOpacity
-                onPress={() => ToastAndroid.show(item.title, ToastAndroid.LONG)}
-                style={{ flex: 1, height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 18, color: 'green' }}>{item.title}</Text>
-                <Text>{item.desc}</Text>
+                onPress={() => {this.props.navigation.navigate('ViewTask', { task_id: task_id } )}}
+                style={{ flex: 1, height: 70, paddingLeft: 50, paddingRight: 50, paddingTop: 5, paddingBottom: 5 }}>
+                <View style={{ flex: 1, alignItems: 'center', alignContent: 'center'}}>
+                    <Text style={{ fontSize: 18, color: 'green' }}>{item.title}</Text>
+                    { (item.desc != '') ?
+                        <Text>{item.desc}</Text> : <Text>no description</Text>  }
+                </View>
+                <Bar progress={0.30} width={null}/>
             </TouchableOpacity>
         )
     }
@@ -101,8 +107,9 @@ class MainScreen extends React.Component {
     renderSeparator = () => {
         return (
             <View
-                style={{ height: 1, width: '100%', backgroundColor: 'black' }}
-            ></View>
+                // style={{ height: 1, width: '100%', backgroundColor: 'black' }}>
+                style={{ height: 1, width: '100%' }}>
+            </View>
         )
     }
 

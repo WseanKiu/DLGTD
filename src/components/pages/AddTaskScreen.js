@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import {
-    Platform,
     ActivityIndicator,
     View,
     Text,
-    Button,
     StyleSheet,
     ScrollView,
     AsyncStorage,
     TouchableOpacity,
     TextInput,
-    DatePickerAndroid,
-    DatePickerIOS,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class AddTaskScreen extends Component {
 
