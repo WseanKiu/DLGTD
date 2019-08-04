@@ -4,21 +4,39 @@ export default StyleSheet.create({
   formContainer: {
     flex: 1,
     alignContent: "center",
-    padding: 20
-  },
-  textLabel: {
-    fontSize: 15
+    paddingTop: 35,
+    paddingBottom: 35,
+    paddingLeft: 20,
+    paddingRight: 20,
+    // backgroundColor: "#1B811B",
+    backgroundColor: "#1D77D4",
   },
   textHeader: {
-    fontSize: 25,
-    marginTop: 10
+    fontSize: 31,
+    color: "#ffffff"
   },
   textSub: {
-    fontSize: 16,
-    marginBottom: 10
+    fontSize: 18,
+    marginBottom: 10,
+    color: "#ffffff"
+  },
+  textLabel: {
+    fontSize: 14,
+    color: "#ffffff"
+  },
+  row2style: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  valContainer: {
+    flex: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: "#ffffff"
   },
   textInput: {
-    borderColor: "#3d4659",
+    borderColor: "#ffffff",
+    color: "#ffffff",
     borderWidth: 1,
     borderRadius: 10,
     fontSize: 25,
@@ -28,7 +46,8 @@ export default StyleSheet.create({
     marginBottom: 10
   },
   textInputChildren: {
-    borderColor: "#3d4659",
+    borderColor: "#ffffff",
+    color: "#ffffff",
     height: 40,
     borderWidth: 1,
     borderRadius: 5,

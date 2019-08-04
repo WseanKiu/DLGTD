@@ -57,4 +57,40 @@ export default StyleSheet.create({
         fontSize: 40,
         fontWeight: '200',
     },
+
+    //MODAL
+    modalContainer: {
+        alignContent: "center",
+        backgroundColor: "#fff",
+        padding: 10,
+        paddingBottom: 20,
+        paddingTop: 20,
+        borderRadius: 10,
+    },
+    modalHeader: {
+        alignItems: "center",
+    },
+    modalBody: {
+        paddingTop: 20,
+        paddingBottom: 20,
+    },
+    modalTitle: {
+        color: "#000",
+        fontSize: 20,
+        alignItems: 'center'
+    },
+    modalTabs: {
+        flexDirection: 'row',
+    },
+    modalTextInput: {
+        borderColor: "#000",
+        color: "#000",
+        borderWidth: 1,
+        borderRadius: 10,
+        fontSize: 23,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
+    }
 });

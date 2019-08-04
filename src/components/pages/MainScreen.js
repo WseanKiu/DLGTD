@@ -28,7 +28,6 @@ class MainScreen extends React.Component {
       isLoading: true,
       ip_server: ""
     };
-    this._getAsyncData();
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -59,6 +58,10 @@ class MainScreen extends React.Component {
       )
     };
   };
+
+  componentWillMount() {
+    this._getAsyncData();
+  }
 
   componentDidMount() {
     setTimeout(() => {

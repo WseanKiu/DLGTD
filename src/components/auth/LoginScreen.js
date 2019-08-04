@@ -18,18 +18,27 @@ export default class LoginScreen extends React.Component {
         this.state = {
             username: '',
             password: '',
+            ip_server: '',
         };
     }
+
+    componentDidMount() {
+        this._getAsyncData();
+    }
+
+    _getAsyncData = async () => {
+        const server_ip = await AsyncStorage.getItem("server_ip");
+        this.setState({
+            ip_server: server_ip
+        });
+    };
 
     authLogin = () => {
         const { username } = this.state;
         const { password } = this.state;
-        const server_ip = (async () => {
-            await AsyncStorage.getItem('server_ip');
-        } ) ();
-        
-        // fetch('http://' + server_ip + '/dlgtd/controller/loginController.php', {
-        fetch('http://192.168.254.108/dlgtd/controller/loginController.php', {
+
+        fetch('http://' + this.state.ip_server + '/dlgtd/controller/loginController.php', {
+            // fetch('http://192.168.254.108/dlgtd/controller/loginController.php', {
             method: 'post',
             header: {
                 'Accept': 'application/json',
@@ -42,7 +51,7 @@ export default class LoginScreen extends React.Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                if(responseJson.error === false) {
+                if (responseJson.error === false) {
                     this._setDataAsync();
                     this.props.navigation.navigate('App');
                 } else {
@@ -50,7 +59,7 @@ export default class LoginScreen extends React.Component {
                 }
             })
             .catch((error) => {
-                alert(error);
+                alert(error + server_ip);
                 // console.error(error);
             });
     }
