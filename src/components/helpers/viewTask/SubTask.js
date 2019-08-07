@@ -9,13 +9,14 @@ import {
 export default class SubTask extends Component{
     render() {
         return (
-            <View key={this.props.keyval} style={styles.note}>
-                <Text style={styles.noteText}>{this.props.val.subTaskName}</Text>
-                <Text style={styles.noteText}>{this.props.val.subTaskDesc}</Text>
+            <TouchableOpacity key={this.props.keyval} style={styles.note}
+                onLongPress={alert('longpressed!')}>
+                <Text style={styles.noteHeader}>{this.props.val.subtask_name}</Text>
+                <Text style={styles.noteText}>{this.props.val.subtask_desc}</Text>
                 <TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
                     <Text style={styles.noteDeleteText}>D</Text>
                 </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
         );
     }
 }
@@ -29,8 +30,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderBottomColor: '#ededed',
     },
-    noteText: {
+    noteHeader: {
         fontSize: 20,
+        paddingLeft: 20,
+        borderLeftWidth: 10,
+        borderLeftColor: '#e91e63',
+    },
+    noteText: {
+        fontSize: 14,
         paddingLeft: 20,
         borderLeftWidth: 10,
         borderLeftColor: '#e91e63',

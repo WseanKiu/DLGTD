@@ -44,6 +44,7 @@ class ViewTaskScreen extends React.Component {
       subTaskArray: [],
       subTaskName: "",
       subTaskDesc: "",
+      subTaskDue: "",
     };
   }
 
@@ -66,45 +67,94 @@ class ViewTaskScreen extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      const url =
+    const url =
+      "http://" +
+      this.props.navigation.getParam("server_ip", "") +
+      "/dlgtd/controller/viewTaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        user_id: this.state.user_id,
+        task_id: this.props.navigation.getParam("task_id", "0")
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        //   alert(responseJson.items[0].title);
+        this.setState({
+          taskContainer: responseJson.items[0],
+          isLoading: false,
+          task_name: responseJson.items[0].title,
+          task_desc: responseJson.items[0].desc,
+          task_dueDate: responseJson.items[0].due_date,
+          date_created: responseJson.items[0].date_created,
+          var_taskName: responseJson.items[0].title,
+          var_taskDesc: responseJson.items[0].desc,
+          var_dueDate: responseJson.items[0].due_date,
+        });
+      })
+      .catch(error => {
+        alert(error + url);
+        // alert("Please check your internet connection!");
+      });
+
+    this.timer = setInterval(() => {
+      const url_2 =
         "http://" +
         this.props.navigation.getParam("server_ip", "") +
-        "/dlgtd/controller/viewTaskController.php";
-      fetch(url, {
+        "/dlgtd/controller/getSubTaskController.php";
+      fetch(url_2, {
         method: "post",
         header: {
           Accept: "application/json",
           "Content-type": "applicantion/json"
         },
         body: JSON.stringify({
-          user_id: this.state.user_id,
           task_id: this.props.navigation.getParam("task_id", "0")
         })
       })
         .then(response => response.json())
         .then(responseJson => {
-          //   alert(responseJson.items[0].title);
           this.setState({
-            taskContainer: responseJson.items[0],
-            isLoading: false,
-            task_name: responseJson.items[0].title,
-            task_desc: responseJson.items[0].desc,
-            task_dueDate: responseJson.items[0].due_date,
-            date_created: responseJson.items[0].date_created,
-            var_taskName: responseJson.items[0].title,
-            var_taskDesc: responseJson.items[0].desc,
-            var_dueDate: responseJson.items[0].due_date,
+            subTaskArray: responseJson.items,
           });
         })
         .catch(error => {
           alert(error + url);
           // alert("Please check your internet connection!");
         });
-    }, 10);
+    }, 100);
   }
 
   componentWillUnmount() {
+    clearInterval(this.timer);
+    this.setState({
+      isLoading: true,
+      isModalVisible: false,
+      ip_server: "",
+      user_id: "",
+      taskContainer: [],
+      task_name: "",
+      var_taskName: "",
+      editTitle: false,
+      task_desc: "",
+      var_taskDesc: "",
+      editDesc: false,
+      task_dueDate: "",
+      var_dueDate: "",
+      editDue: false,
+      present_date: "",
+      date_created: "",
+      subTaskArray: [],
+      subTaskName: "",
+      subTaskDesc: "",
+      subTaskDue: "",
+    });
+
     var values = this.state.task_name === this.state.var_taskName ?
       '' : "task_name = '" + this.state.task_name + "'";
     values += this.state.task_desc === this.state.var_taskDesc ?
@@ -143,37 +193,35 @@ class ViewTaskScreen extends React.Component {
     }
   }
 
-  putSubTask = (subtask_name) => {
-    alert(subtask_name);
-    // var values = this.state.task_name === this.state.var_taskName ?
-    //   '' : "task_name = '" + this.state.task_name + "' ";
-    // value += this.state.task_desc === this.state.var_taskDesc ?
-    //   '' : "task_description = '" + this.state.task_desc + "' ";
-    // value += this.state.task_dueDate === this.state.var_dueDate ?
-    //   '' : "due_date = '" + this.state.task_dueDate + "'";
-
-    // const url =
-    //   "http://" +
-    //   this.state.ip_server +
-    //   "/dlgtd/controller/updateTaskController.php";
-    // fetch(url, {
-    //   method: "post",
-    //   header: {
-    //     Accept: "application/json",
-    //     "Content-type": "applicantion/json"
-    //   },
-    //   body: JSON.stringify({
-    //     user_id: 4,
-    //     task_id: this.props.navigation.getParam("task_id", "0"),
-    //     values: values,
-    //   })
-    // })
-    //   .then(response => response.json())
-    //   .then(responseJson => {})
-    //   .catch(error => {
-    //     // alert(error + url);
-    //     alert("Please check your internet connection!");
-    //   });
+  putSubTask = () => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/addSubTaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        task_id: this.props.navigation.getParam("task_id", "0"),
+        user_id: this.state.user_id,
+        subTask_name: this.state.subTaskName,
+        subTask_desc: this.state.subTaskDesc,
+        due_date: this.state.subTaskDue,
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        alert(error + "Please check your internet connection!");
+      });
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -216,22 +264,21 @@ class ViewTaskScreen extends React.Component {
   addSubTask() {
     // alert(subtask);
     if (this.state.subTaskName !== '') {
-      this.putSubTask(this.state.subTaskName);
-      var d = new Date();
-      this.state.subTaskArray.push({
-        'subTaskName': this.state.subTaskName,
-        'subTaskDesc': this.state.subTaskDesc
-      });
-      this.setState({ subTaskArray: this.state.subTaskArray })
+      this.putSubTask();
+      // this.state.subTaskArray.push({
+      //   'subtask_name': this.state.subTaskName,
+      //   'subtask_desc': this.state.subTaskDesc
+      // });
+      // this.setState({ subTaskArray: this.state.subTaskArray })
       this.setState({ subTaskName: '', subTaskDesc: '' });
     } else {
       Alert.alert(
         'Oops!',
         'Subtask name must be filled!',
         [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     }
     this.setState({ isModalVisible: false });
@@ -262,14 +309,13 @@ class ViewTaskScreen extends React.Component {
                   autoFocus
                   onChangeText={(subTaskName) => this.setState({ subTaskName })}
                   value={this.state.subTaskName}
-                  style={styles.modalTextInput}
+                  style={formsStyle.md_textInput_header}
                   placeholder="Subtask name" />
-                  <TextInput
-                    autoFocus
-                    onChangeText={(subTaskDesc) => this.setState({ subTaskDesc })}
-                    value={this.state.subTaskDesc}
-                    style={styles.modalTextInput}
-                    placeholder="Description" />
+                <TextInput
+                  onChangeText={(subTaskDesc) => this.setState({ subTaskDesc })}
+                  value={this.state.subTaskDesc}
+                  style={formsStyle.md_textInput_children}
+                  placeholder="Description" />
               </View>
 
               <View style={styles.modalTabs}>

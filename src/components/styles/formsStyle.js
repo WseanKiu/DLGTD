@@ -69,5 +69,31 @@ export default StyleSheet.create({
     color: "#ffffff",
     fontSize: 20,
     textAlign: "center"
-  }
+  },
+
+  // Modal add subtask style
+  
+  md_textInput_header: {
+    borderColor: "#000",
+    color: "#000",
+    borderWidth: 1,
+    borderRadius: 10,
+    fontSize: 20,
+    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  md_textInput_children: {
+    borderColor: "#000",
+    color: "#000",
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 5,
+    fontSize: 16,
+    padding: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 10,
+    marginBottom: 10
+  },
 });

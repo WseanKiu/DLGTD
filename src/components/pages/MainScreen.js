@@ -65,7 +65,7 @@ class MainScreen extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(() => {
+    this.timer = setInterval(() => {
       const url =
         "http://" +
         this.state.ip_server +
@@ -88,9 +88,20 @@ class MainScreen extends React.Component {
           });
         })
         .catch(error => {
-          alert(error + url);
+          // alert(error + url);
         });
     }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    this.setState({
+      username: null,
+      taskContainer: [],
+      isLoading: true,
+      ip_server: "",
+      user_id: "",
+    });
   }
 
   renderItem = ({ item }) => {
