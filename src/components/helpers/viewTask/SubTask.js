@@ -10,8 +10,8 @@ export default class SubTask extends Component{
     render() {
         return (
             <View key={this.props.keyval} style={styles.note}>
-                <Text style={styles.noteText}>{this.props.val.date}</Text>
-                <Text style={styles.noteText}>{this.props.val.note}</Text>
+                <Text style={styles.noteText}>{this.props.val.subTaskName}</Text>
+                <Text style={styles.noteText}>{this.props.val.subTaskDesc}</Text>
                 <TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
                     <Text style={styles.noteDeleteText}>D</Text>
                 </TouchableOpacity>
@@ -23,12 +23,14 @@ export default class SubTask extends Component{
 const styles = StyleSheet.create({
     note: {
         position: 'relative',
-        padding: 20,
-        paddingRight: 100,
+        padding: 10,
+        paddingRight: 10,
+        paddingLeft: 20,
         borderBottomWidth: 2,
         borderBottomColor: '#ededed',
     },
     noteText: {
+        fontSize: 20,
         paddingLeft: 20,
         borderLeftWidth: 10,
         borderLeftColor: '#e91e63',

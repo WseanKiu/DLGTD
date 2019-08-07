@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AuthScreen from './src/components/auth/AuthScreen';
 import MainScreen from './src/components/pages/MainScreen';
 import LoginScreen from './src/components/auth/LoginScreen';
+import LogoutScreen from './src/components/auth/LogoutScreen';
 import AddTaskScreen from './src/components/pages/AddTaskScreen';
 import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
@@ -61,7 +62,8 @@ const Tabs = createBottomTabNavigator(
 const Drawer = createDrawerNavigator(
     {
         Tabs: { screen: Tabs },
-        GroupStack: { screen: GroupStack }
+        GroupStack: { screen: GroupStack },
+        Logout: { screen: LogoutScreen },
     }
 );
 

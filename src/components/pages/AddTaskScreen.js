@@ -16,6 +16,7 @@ class AddTaskScreen extends Component {
     super(props);
     this.state = {
       server_ip: "",
+      user_id: "",
       task_name: "",
       task_description: "",
       isLoading: false,
@@ -72,7 +73,7 @@ class AddTaskScreen extends Component {
         "Content-type": "applicantion/json"
       },
       body: JSON.stringify({
-        user_id: 4,
+        user_id: this.state.user_id,
         task_name: task_name,
         task_description: task_description,
         task_dueDate: due_date
@@ -83,17 +84,18 @@ class AddTaskScreen extends Component {
         if (responseJson.error === false) {
           this.props.navigation.navigate("Main");
         } else {
-          alert(responseJson.msg);
+          alert(responseJson.msg + 'AddtaskScreen!');
         }
       })
       .catch(error => {
-        alert(error);
+        alert(error + 'error: catch! AddtaskScreen!');
       });
   };
 
   _getAsyncData = async () => {
     const server_ip = await AsyncStorage.getItem("server_ip");
-    this.setState({ server_ip: server_ip });
+    const user_id = await AsyncStorage.getItem("user_id");
+    this.setState({ server_ip: server_ip, user_id: user_id });
   };
 
   render() {
@@ -102,61 +104,61 @@ class AddTaskScreen extends Component {
         <ActivityIndicator size="large" color="#000000" animating />
       </View>
     ) : (
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.formContainer}>
-            <Text style={styles.textLabel}>Title*</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Title"
-              onChangeText={task_name => this.setState({ task_name })}
-            />
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.formContainer}>
+              <Text style={styles.textLabel}>Title*</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Title"
+                onChangeText={task_name => this.setState({ task_name })}
+              />
 
-            <Text style={styles.textLabel}>Description</Text>
-            <TextInput
-              style={styles.textInputChildren}
-              placeholder="Description"
-              onChangeText={task_description =>
-                this.setState({ task_description })
-              }
-            />
-            <Text style={styles.textLabel}>Due date</Text>
-
-            <DatePicker
-              style={{ width: 200 }}
-              date={this.state.due_date}
-              mode="datetime"
-              placeholder={this.state.dateText}
-              format="YYYY-MM-DD HH:mm"
-              minDate={this.state.present_date}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: "absolute",
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  marginLeft: 36
+              <Text style={styles.textLabel}>Description</Text>
+              <TextInput
+                style={styles.textInputChildren}
+                placeholder="Description"
+                onChangeText={task_description =>
+                  this.setState({ task_description })
                 }
-              }}
-              minuteInterval={10}
-              onDateChange={due_date => {
-                this.setState({ due_date: due_date });
-              }}
-            />
+              />
+              <Text style={styles.textLabel}>Due date</Text>
+
+              <DatePicker
+                style={{ width: 200 }}
+                date={this.state.due_date}
+                mode="datetime"
+                placeholder={this.state.dateText}
+                format="YYYY-MM-DD HH:mm"
+                minDate={this.state.present_date}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: "absolute",
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0
+                  },
+                  dateInput: {
+                    marginLeft: 36
+                  }
+                }}
+                minuteInterval={10}
+                onDateChange={due_date => {
+                  this.setState({ due_date: due_date });
+                }}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={this.checkInputs}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={this.checkInputs}
-          >
-            <Text style={styles.saveButtonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    );
+        </ScrollView>
+      );
   }
 }
 

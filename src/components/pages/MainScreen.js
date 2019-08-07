@@ -26,7 +26,8 @@ class MainScreen extends React.Component {
       username: null,
       taskContainer: [],
       isLoading: true,
-      ip_server: ""
+      ip_server: "",
+      user_id: "",
     };
   }
 
@@ -64,7 +65,7 @@ class MainScreen extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
+    setInterval(() => {
       const url =
         "http://" +
         this.state.ip_server +
@@ -76,7 +77,7 @@ class MainScreen extends React.Component {
           "Content-type": "applicantion/json"
         },
         body: JSON.stringify({
-          user_id: 4
+          user_id: this.state.user_id
         })
       })
         .then(response => response.json())
@@ -97,7 +98,7 @@ class MainScreen extends React.Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate("ViewTask", { task_id: task_id });
+          this.props.navigation.navigate("ViewTask", { task_id: task_id, server_ip: this.state.ip_server });
         }}
         style={{
           flex: 1,
@@ -131,10 +132,11 @@ class MainScreen extends React.Component {
   };
 
   _getAsyncData = async () => {
-    const userToken = await AsyncStorage.getItem("username");
+    const user_id = await AsyncStorage.getItem("user_id");
     const server_ip = await AsyncStorage.getItem("server_ip");
     this.setState({
-      ip_server: server_ip
+      ip_server: server_ip,
+      user_id: user_id
     });
   };
 

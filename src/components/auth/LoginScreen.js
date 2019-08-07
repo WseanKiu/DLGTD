@@ -17,7 +17,7 @@ export default class LoginScreen extends React.Component {
         super(props);
         this.state = {
             username: '',
-            password: '',
+            user_id: '',
             ip_server: '',
         };
     }
@@ -52,6 +52,7 @@ export default class LoginScreen extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (responseJson.error === false) {
+                    this.setState({ user_id: responseJson.user_id });
                     this._setDataAsync();
                     this.props.navigation.navigate('App');
                 } else {
@@ -66,7 +67,7 @@ export default class LoginScreen extends React.Component {
 
     _setDataAsync = async () => {
         await AsyncStorage.setItem('username', this.state.username);
-        await AsyncStorage.setItem('password', this.state.password);
+        await AsyncStorage.setItem('user_id', this.state.user_id);
         await AsyncStorage.setItem('userToken', 'App');
     };
 
