@@ -49,7 +49,6 @@ class ViewTaskScreen extends React.Component {
   }
 
   componentWillMount() {
-
     this._getAsyncData();
 
     var day = new Date();
@@ -284,11 +283,15 @@ class ViewTaskScreen extends React.Component {
     this.setState({ isModalVisible: false });
   }
 
+  editSubTask(subtask_id) {
+    alert("how deep is your love" + subtask_id);
+  }
+
   render() {
     const { navigation } = this.props;
 
     let SubTasks = this.state.subTaskArray.map((val, key) => {
-      return <SubTask key={key} keyval={key} val={val} />
+      return <SubTask key={key} keyval={key} val={val} editSubTask={this.editSubTask(val.subtask_id)}/>
     });
 
     return this.state.isLoading ? (

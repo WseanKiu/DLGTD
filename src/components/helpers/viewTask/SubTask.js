@@ -7,10 +7,14 @@ import {
 } from 'react-native';
 
 export default class SubTask extends Component{
+    longPressListener = () => {
+        alert('long pressed!');
+        this.props.editSubTask;
+    }
     render() {
         return (
             <TouchableOpacity key={this.props.keyval} style={styles.note}
-                onLongPress={alert('longpressed!')}>
+                onLongPress={this.longPressListener} activeOpacity={0.6}>
                 <Text style={styles.noteHeader}>{this.props.val.subtask_name}</Text>
                 <Text style={styles.noteText}>{this.props.val.subtask_desc}</Text>
                 <TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
