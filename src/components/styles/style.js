@@ -72,7 +72,6 @@ export default StyleSheet.create({
     },
     modalBody: {
         paddingTop: 20,
-        paddingBottom: 20,
     },
     modalTitle: {
         color: "#000",
@@ -80,6 +79,7 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     modalTabs: {
+        paddingTop: 20,
         flexDirection: 'row',
     },
     modalTextInput: {

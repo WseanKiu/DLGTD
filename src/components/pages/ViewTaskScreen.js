@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from "react-native";
+import DatePicker from "react-native-datepicker";
 import DlgtdLogo from "../../assets/logo/DlgtdLogo";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Modal from "react-native-modal";
@@ -27,6 +28,7 @@ class ViewTaskScreen extends React.Component {
     this.state = {
       isLoading: true,
       isModalVisible: false,
+      editSubTask: false,
       ip_server: "",
       user_id: "",
       taskContainer: [],
@@ -123,7 +125,7 @@ class ViewTaskScreen extends React.Component {
           });
         })
         .catch(error => {
-          alert(error + url);
+          // alert(error + url);
           // alert("Please check your internet connection!");
         });
     }, 100);
@@ -149,6 +151,7 @@ class ViewTaskScreen extends React.Component {
       present_date: "",
       date_created: "",
       subTaskArray: [],
+      subTaskID: "",
       subTaskName: "",
       subTaskDesc: "",
       subTaskDue: "",
@@ -223,6 +226,44 @@ class ViewTaskScreen extends React.Component {
       });
   }
 
+  updateSubTask = () => {
+    var values = "subtask_name = '" + this.state.subTaskName + "'";
+
+    values += this.state.subTaskDesc !== ''?
+      ", subtask_desc = '" + this.state.subTaskDesc + "'" : '';
+
+    values += this.state.subTaskDue !== '' ?
+      ", due_date = '" + this.state.subTaskDue + "'" : '';
+
+    // alert(values + this.state.subTaskID + " - " + this.state.subTaskDesc);
+
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/updateSubtaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        subtask_id: this.state.subTaskID,
+        values: values
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        alert(error + "Please check your internet connection!");
+      });
+  }
+
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: (
@@ -257,18 +298,20 @@ class ViewTaskScreen extends React.Component {
   };
 
   toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({
+      isModalVisible: false, 
+      editSubTask: false ,
+      subTaskID: '',
+      subTaskName: '', 
+      subTaskDesc: '',
+      subTaskDue: ''
+    });
   };
 
   addSubTask() {
-    // alert(subtask);
+
     if (this.state.subTaskName !== '') {
-      this.putSubTask();
-      // this.state.subTaskArray.push({
-      //   'subtask_name': this.state.subTaskName,
-      //   'subtask_desc': this.state.subTaskDesc
-      // });
-      // this.setState({ subTaskArray: this.state.subTaskArray })
+      this.putSubTask();      
       this.setState({ subTaskName: '', subTaskDesc: '' });
     } else {
       Alert.alert(
@@ -283,15 +326,38 @@ class ViewTaskScreen extends React.Component {
     this.setState({ isModalVisible: false });
   }
 
-  editSubTask(subtask_id) {
-    alert("how deep is your love" + subtask_id);
+  editSubTask() {
+
+    if (this.state.subTaskName !== '') {
+      this.updateSubTask();
+      this.setState({ subTaskName: '', subTaskDesc: '', subTaskDue: ''});
+    } else {
+      Alert.alert(
+        'Oops!',
+        'Subtask name must be filled!',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+    this.setState({ editSubTask : false });
   }
+
+  // editSubTask(subtask_id) { 
 
   render() {
     const { navigation } = this.props;
 
     let SubTasks = this.state.subTaskArray.map((val, key) => {
-      return <SubTask key={key} keyval={key} val={val} editSubTask={this.editSubTask(val.subtask_id)}/>
+      return <SubTask key={key} keyval={key} val={val}
+                editSubTask={() => this.setState({
+                  editSubTask: true,
+                  subTaskID: val.subtask_id,
+                  subTaskName: val.subtask_name,
+                  subTaskDesc: val.subtask_desc,
+                  subTaskDue: val.due_date,
+                }) }/>
     });
 
     return this.state.isLoading ? (
@@ -325,7 +391,64 @@ class ViewTaskScreen extends React.Component {
                 <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.toggleModal}>
                   <Text>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.addSubTask.bind(this)}>
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }}  onPress={this.addSubTask.bind(this)}>
+                  <Text>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <Modal
+            isVisible={this.state.editSubTask}>
+            <View style={styles.modalContainer}>
+
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Edit Subtask</Text>
+              </View>
+              <View style={styles.modalBody}>
+                <TextInput
+                  autoFocus
+                  onChangeText={(subTaskName) => this.setState({ subTaskName })}
+                  value={this.state.subTaskName}
+                  style={formsStyle.md_textInput_header}
+                  placeholder="Subtask name" />
+                <TextInput
+                  onChangeText={(subTaskDesc) => this.setState({ subTaskDesc })}
+                  value={this.state.subTaskDesc}
+                  style={formsStyle.md_textInput_children}
+                  placeholder="Description" />
+              </View>
+
+              <DatePicker
+                style={{ width: 200 }}
+                mode="datetime"
+                date={this.state.subTaskDue}
+                placeholder="Pick a date"
+                format="YYYY-MM-DD HH:mm"
+                minDate={this.state.present_date}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: "absolute",
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0
+                  },
+                  dateInput: {
+                    marginLeft: 36
+                  }
+                }}
+                minuteInterval={10}
+                onDateChange={subTaskDue => {
+                  this.setState({ subTaskDue: subTaskDue });
+                }}
+              />
+
+              <View style={styles.modalTabs}>
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.toggleModal}>
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.editSubTask.bind(this)}>
                   <Text>Save</Text>
                 </TouchableOpacity>
               </View>
