@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import DatePicker from "react-native-datepicker";
 
-class AddTaskScreen extends Component {
+class AddGrouptaskScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ class AddTaskScreen extends Component {
   }
 
   static navigationOptions = {
-    title: "add task"
+    title: "Add group task"
   };
 
   componentDidMount() {
@@ -77,15 +77,15 @@ class AddTaskScreen extends Component {
         task_name: task_name,
         task_description: task_description,
         task_dueDate: due_date,
-        task_type: 'solo'
+        task_type: 'group'
       })
     })
       .then(response => response.json())
       .then(responseJson => {
         if (responseJson.error === false) {
-          this.props.navigation.navigate("Main");
+          this.props.navigation.navigate("GroupTaskScreen");
         } else {
-          alert(responseJson.msg + 'AddtaskScreen!');
+          alert(responseJson.msg + 'AddGrouptaskScreen!');
         }
       })
       .catch(error => {
@@ -108,7 +108,7 @@ class AddTaskScreen extends Component {
         <ScrollView>
           <View style={styles.container}>
             <View style={styles.formContainer}>
-              <Text style={styles.textLabel}>Title*</Text>
+              <Text style={styles.textLabel}>Project title*</Text>
               <TextInput
                 style={styles.textInput}
                 placeholder="Title"
@@ -163,7 +163,7 @@ class AddTaskScreen extends Component {
   }
 }
 
-export default AddTaskScreen;
+export default AddGrouptaskScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -231,19 +231,3 @@ const styles = StyleSheet.create({
     marginTop: 10
   }
 });
-
-// {
-//                                 Platform.OS === 'android' ?
-//                                     (
-//                                         <TouchableOpacity
-//                                             style={styles.rowContainer}
-//                                             onPress={() => this.showDatePicker({ date: this.state.date })} >
-//                                             <Ionicons name="md-calendar" size={35} />
-//                                             <Text style={styles.Date_Button}>{this.state.dateText}</Text>
-//                                         </TouchableOpacity>
-//                                     )
-//                                     :
-//                                     <DatePickerIOS
-//                                         date={this.state.date}
-//                                         onDateChange={this.setDate} />
-//                             }

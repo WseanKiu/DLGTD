@@ -14,6 +14,8 @@ import {
   ToastAndroid
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon_2 from "react-native-vector-icons/MaterialCommunityIcons";
+import { Badge } from 'react-native-elements';
 import styles from "../styles/style";
 import DlgtdLogo from "../../assets/logo/DlgtdLogo";
 import FloatingAddButton from "../helpers/FloatingAddButton";
@@ -50,7 +52,7 @@ class MainScreen extends React.Component {
       headerRight: (
         <View style={styles.rightNav}>
           <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icon style={styles.navItem} name="search" size={25} />
+            <Icon style={styles.navItem} name="notifications" size={25} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Icon style={styles.navItem} name="account-circle" size={25} />
@@ -113,21 +115,31 @@ class MainScreen extends React.Component {
         }}
         style={{
           flex: 1,
-          height: 70,
-          paddingLeft: 50,
-          paddingRight: 50,
-          paddingTop: 5,
-          paddingBottom: 5
+          paddingTop: 10,
+          paddingLeft: 30,
+          paddingRight: 30,
+          paddingBottom: 2
         }}
       >
-        <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
-          <Text style={{ fontSize: 18, color: "green" }}>{item.title}</Text>
+        <View style={{ flex: 1, alignContent: "center" }}>
+        <View style={{flexDirection: 'row', alignContent: 'center'}}>
+          {item.task_status == 'prioritize'? <Icon name="star" size={25} color="#f1c40f"/> : null}
+          <Text style={{ fontSize: 20, color: "green" }}>{item.title}</Text>
+        </View>
           {item.desc != "" ? (
             <Text>{item.desc}</Text>
           ) : (
-            <Text>no description</Text>
-          )}
+              <Text>no description</Text>
+            )}
         </View>
+
+        { item.due_date ?
+          <View style={{flexDirection: 'row'}}>
+            <Icon_2 name="calendar-clock" size={18} color="#e74c3c"/>
+            <Text style={{fontSize: 10, paddingLeft: 5, alignSelf: 'center', paddingBottom: 10}}>{item.due_date}</Text>
+            {/* <Badge value={item.due_date} status='primary' /> */}
+          </View>
+          : null }
         <Bar progress={0.3} width={null} />
       </TouchableOpacity>
     );
@@ -162,16 +174,16 @@ class MainScreen extends React.Component {
         <ActivityIndicator size="large" color="#000000" animating />
       </View>
     ) : (
-      <View style={styles.container}>
-        <FloatingAddButton navigation={this.props.navigation} />
-        <FlatList
-          data={this.state.taskContainer}
-          renderItem={this.renderItem}
-          keyExtractor={(item, index) => index}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
-      </View>
-    );
+        <View style={styles.container}>
+          <FloatingAddButton navigation={this.props.navigation} />
+          <FlatList
+            data={this.state.taskContainer}
+            renderItem={this.renderItem}
+            keyExtractor={(item, index) => index}
+            ItemSeparatorComponent={this.renderSeparator}
+          />
+        </View>
+      );
   }
 
   // render() {

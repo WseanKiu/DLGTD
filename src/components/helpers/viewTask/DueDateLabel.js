@@ -16,9 +16,11 @@ class DueDateLabel extends React.Component {
             <View style={styles.container}>
                 {
                     this.props.editDue ? (
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <DatePicker
                             style={{ width: 200 }}
                             date={this.props.task_dueDate instanceof Date ? this.props.task_dueDate : this.props.present_date}
+                            // date={this.props.task_dueDate instanceof Date ? this.props.task_dueDate : null}
                             mode="datetime"
                             placeholder="Pick a date"
                             format="YYYY-MM-DD HH:mm"
@@ -40,6 +42,10 @@ class DueDateLabel extends React.Component {
                             onCloseModal={this.props.updateEditDue}
                             onDateChange={this.props.setDueDate}
                         />
+                        <TouchableOpacity style={{marginLeft: 7}} onPress={this.props.removeDueDate}>
+                            <Icon name="calendar-remove" size={30} color="#fff"/>
+                        </TouchableOpacity>
+                        </View>
                     ) : (
                             <TouchableOpacity
                                 onPress={this.props.editDueDate}

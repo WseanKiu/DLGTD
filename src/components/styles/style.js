@@ -15,8 +15,8 @@ export default StyleSheet.create({
     //BODY
     container: {
         flex: 1,
-        alignItems: 'center',
-        alignContent: 'center',
+        // alignItems: 'center',
+        // alignContent: 'center',
     },    
     scrollContainer: {
         flex: 1,
@@ -45,8 +45,8 @@ export default StyleSheet.create({
         right: 20,
         bottom: 20,
         backgroundColor: '#e91e63',
-        width: 70,
-        height: 70,
+        width: 50,
+        height: 50,
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',
@@ -92,5 +92,28 @@ export default StyleSheet.create({
         paddingRight: 10,
         paddingTop: 5,
         paddingBottom: 5,
+    },
+
+    // task list
+    dueDateBadge: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 10,
+        right: 10,
+    },
+
+    // delete
+    deleteTaskButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+
+    // prioritize button: 
+    prioritizeButton: {
+        position: 'absolute',
+        top: 10,
+        left: 20,   
     }
 });

@@ -15,6 +15,8 @@ import LogoutScreen from './src/components/auth/LogoutScreen';
 import AddTaskScreen from './src/components/pages/AddTaskScreen';
 import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
+import AddGrouptaskScreen from './src/components/pages/AddGroupTaskScreen';
+import ViewGroupTaskScreen from './src/components/pages/ViewGroupTaskScreen';
 
 const AppStack = createStackNavigator(
     {
@@ -27,14 +29,25 @@ const AppStack = createStackNavigator(
 const GroupStack = createStackNavigator(
     {
         GroupTaskScreen: { screen: GroupTaskScreen },
-        AddTask: { screen: AddTaskScreen }
+        ViewGroupTaskScreen: { screen: ViewGroupTaskScreen },
+        AddGroupTask: { screen: AddGrouptaskScreen }
     }
 );
 
 const Tabs = createBottomTabNavigator(
     {
-        Main: { screen: AppStack },
-        GroupTask: { screen: GroupStack }
+        Main: {
+            screen: AppStack,
+            navigationOptions: {
+                tabBarLabel: 'Solo task',
+            }
+        },
+        GroupTask: {
+            screen: GroupStack,
+            navigationOptions: {
+                tabBarLabel: 'Group',
+            }
+        }
     },
     {
         defaultNavigationOptions: ({ navigation }) => ({
