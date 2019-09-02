@@ -4,6 +4,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import styles from '../../styles/style';
+import Icon from "react-native-vector-icons/Ionicons";
 
 class FLoatingAddGroupTask extends React.Component {
     render() {
@@ -11,7 +12,7 @@ class FLoatingAddGroupTask extends React.Component {
             <TouchableOpacity 
             onPress={() => this.props.navigation.navigate('AddGroupTask')}
             style={styles.addButton}>
-                <Text style={styles.addButtonText}>+</Text>
+                <Icon name="ios-add" size={30} color="#fff" />
             </TouchableOpacity>
         );
     }

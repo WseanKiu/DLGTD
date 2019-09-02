@@ -22,6 +22,44 @@ export default StyleSheet.create({
         flex: 1,
     },
 
+    // NOTIFICATION
+    notifContainer: {
+        flex: 1,
+        paddingTop: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
+        paddingBottom: 2,
+        backgroundColor: '#ecf0f1'    
+    },
+
+    notifTabs: {
+        paddingTop: 5,
+        flexDirection: 'row',
+        paddingBottom: 5
+    },
+
+    notifText: {
+        color: '#2c3e50',
+        fontSize: 14
+    },
+
+    notifBtnAccept: {
+        borderRadius: 10,
+        backgroundColor: '#007aff',
+        // borderWidth: 2,
+        // borderColor: '#34aadc',
+        padding: 10,
+        margin: 5,
+    },
+    notifBtnDecline: {
+        borderRadius: 10,
+        backgroundColor: '#7f8c8d',
+        padding: 10,
+        margin: 5,
+        // borderWidth: 2,
+        // borderColor: '#ff5722'
+    },
+
     // TASK
     taskContainer: {
         position: 'relative',
@@ -101,6 +139,67 @@ export default StyleSheet.create({
         alignItems: 'center',
         top: 10,
         right: 10,
+    },
+
+    noteContainer: {
+        flex: 1,
+        // width: '1%',
+        flexDirection: 'row',
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 10,
+        padding: 5,
+        borderRadius: 10,
+        backgroundColor: '#ecf0f1',
+    },
+    cont_box1: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        width: 50
+    },
+    cont_textbox: {
+        flex: 5,
+        // width: 100,
+        alignSelf: 'stretch'
+    },
+    cont_box2: {
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        flex: 1
+        // width: 50
+    },
+    noteHeader: {
+        fontSize: 20,
+        // textDecorationLine: 'line-through'
+    },
+    noteText: {
+        fontSize: 14,
+    },
+    dueDateBadge: {
+        // position: 'absolute',
+        // justifyContent: 'center',
+        alignSelf: 'flex-start',
+    },
+    dueDateStyle: {
+        backgroundColor: '#e67e22',
+        color: '#fff',
+        fontSize: 11,
+        borderRadius: 40,
+        paddingLeft: 4,
+        paddingRight: 4,
+        marginTop:3,
+        marginBottom: 3,
+    },
+
+
+    note: {
+        position: 'relative',
+        padding: 10,
+        paddingRight: 10,
+        paddingLeft: 20,
+        borderBottomWidth: 2,
+        borderBottomColor: '#ededed',
     },
 
     // delete

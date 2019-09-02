@@ -30,6 +30,7 @@ class MainScreen extends React.Component {
       isLoading: true,
       ip_server: "",
       user_id: "",
+      user_code: "",
     };
   }
 
@@ -51,12 +52,12 @@ class MainScreen extends React.Component {
       ),
       headerRight: (
         <View style={styles.rightNav}>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
             <Icon style={styles.navItem} name="notifications" size={25} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Icon style={styles.navItem} name="account-circle" size={25} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )
     };
@@ -140,7 +141,12 @@ class MainScreen extends React.Component {
             {/* <Badge value={item.due_date} status='primary' /> */}
           </View>
           : null }
-        <Bar progress={0.3} width={null} />
+          
+          {
+            item.total_progress > 0 ?
+            <Bar progress={item.progress / item.total_progress} width={null} />
+            : null
+          }
       </TouchableOpacity>
     );
   };
@@ -157,9 +163,11 @@ class MainScreen extends React.Component {
   _getAsyncData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     const server_ip = await AsyncStorage.getItem("server_ip");
+    const user_code = await AsyncStorage.getItem("user_code");
     this.setState({
       ip_server: server_ip,
-      user_id: user_id
+      user_id: user_id,
+      user_code: user_code
     });
   };
 

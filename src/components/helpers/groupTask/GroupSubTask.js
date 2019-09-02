@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Badge, Slider } from 'react-native-elements';
 import Bar from "react-native-progress/Bar";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default class GroupSubTask extends Component {
     constructor(props) {
@@ -26,27 +27,54 @@ export default class GroupSubTask extends Component {
     render() {
         return (
             <TouchableOpacity key={this.props.keyval} style={styles.note}
-                onLongPress={this.props.editSubTask} activeOpacity={0.6}>
+                onLongPress={this.props.creator?this.props.editSubTask:null} activeOpacity={0.6}>
                 <Text style={styles.noteHeader}>{this.props.val.subtask_name}</Text>
                 <Text style={styles.noteText}>{this.props.val.subtask_desc}</Text>
+                {/* { alert(this.props.val.progress)} */}
+                {/* {this.props.val.due_date ?
+                    <View style={styles.dueDateBadge}>
+                        <Badge value={this.props.val.due_date} status='primary' />
+                    </View>
+                    : null} */}
+                {
+                    this.props.val.due_date ?
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon style={{ marginRight: 5 }} name="md-calendar" size={20} />
+                            <Text style={{ fontSize: 12 }}>{this.props.val.due_date}</Text>
+                        </View>
+                        : null
+                }
 
-                {this.props.val.due_date ? 
-                <View style={styles.dueDateBadge}>
-                    <Badge value={this.props.val.due_date} status='primary'/>
-                </View>
-                : null }
+                {
+                    this.props.val.assigned_to ?
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Icon style={{marginRight: 5 }} name="md-person" size={16} />
+                        <Text style={{ fontSize: 14 }}>{this.props.val.assigned_to}</Text>
+                    </View>
+                    : null
+                }
 
                 {this.props.val.user_id == this.props.user_id ?
-                <Slider
-                    value={this.state.progress}
-                    onValueChange={(value) => this.setState({ progress: value})} 
-                /> : 
-                <Bar style={{marginTop: 10}}progress={0.3} width={null} />
+                    <View>
+                        <Slider
+                            onSlidingComplete={this.props.updateProgress}
+                            value={parseFloat(this.props.val.progress)}
+                            onValueChange={(value) => this.setState({ progress: value })}
+                        />
+                        <Text>progress: {this.state.progress}</Text>
+                    </View> :
+                    <Bar style={{ marginTop: 10 }} progress={this.props.val.progress} width={null} />
                 }
-                <Text>progress: {this.state.progress}</Text>
-                
-
-
+                {this.props.creator ?
+                    <TouchableOpacity style={styles.taskDelete} onPress={this.props.deleteSubTask}>
+                        <Icon style={{ marginRight: 10 }} name="md-close" size={25} />
+                    </TouchableOpacity>
+                    :
+                    this.props.val.user_id == this.props.user_id ?
+                        <TouchableOpacity style={styles.taskDelete} onPress={this.props.leaveTask}>
+                            <Icon style={{ marginRight: 10 }} name="ios-log-out" size={25} />
+                        </TouchableOpacity> : <View />
+                }
 
                 {/* <TouchableOpacity style={styles.noteDelete}>
                     <Text style={styles.noteDeleteText}>D</Text>
@@ -77,14 +105,11 @@ const styles = StyleSheet.create({
         borderLeftWidth: 10,
         borderLeftColor: '#e91e63',
     },
-    noteDelete: {
+    taskDelete: {
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#2980b9',
-        padding: 10,
         top: 10,
-        bottom: 10,
         right: 10,
     },
     noteDeleteText: {

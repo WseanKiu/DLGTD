@@ -19,6 +19,7 @@ export default class LoginScreen extends React.Component {
             username: '',
             user_id: '',
             ip_server: '',
+            user_code: '',
         };
     }
 
@@ -37,6 +38,8 @@ export default class LoginScreen extends React.Component {
         const { username } = this.state;
         const { password } = this.state;
 
+        // alert(this.state.ip_server);
+
         fetch('http://' + this.state.ip_server + '/dlgtd/controller/loginController.php', {
             // fetch('http://192.168.254.108/dlgtd/controller/loginController.php', {
             method: 'post',
@@ -52,9 +55,11 @@ export default class LoginScreen extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (responseJson.error === false) {
-                    this.setState({ user_id: responseJson.user_id });
+                    this.setState({ 
+                        user_id: responseJson.user_id,
+                        user_code: responseJson.user_code
+                    });
                     this._setDataAsync();
-                    this.props.navigation.navigate('App');
                 } else {
                     alert(responseJson.msg);
                 }
@@ -66,9 +71,10 @@ export default class LoginScreen extends React.Component {
     }
 
     _setDataAsync = async () => {
-        await AsyncStorage.setItem('username', this.state.username);
+        await AsyncStorage.setItem('user_code', this.state.user_code);
         await AsyncStorage.setItem('user_id', this.state.user_id);
         await AsyncStorage.setItem('userToken', 'App');
+        this.props.navigation.navigate("AuthScreen");
     };
 
     onClickListener = (viewId) => {

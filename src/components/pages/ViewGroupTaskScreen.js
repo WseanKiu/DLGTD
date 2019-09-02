@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import { Slider } from 'react-native-elements';
 import DatePicker from "react-native-datepicker";
+import moment from "moment";
 import DlgtdLogo from "../../assets/logo/DlgtdLogo";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import Modal from "react-native-modal";
 import DateCreatedLabel from "../helpers/viewTask/DateCreatedLabel";
 import DueDateLabel from "../helpers/viewTask/DueDateLabel";
@@ -27,12 +29,14 @@ class ViewGroupTaskScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            creator: false, // if the user is the creator, it'll be true...
             isLoading: true,
             isModalVisible: false,
             editSubTask: false,
             ip_server: "",
             user_id: "",
             taskContainer: [],
+            task_status: "",
             task_name: "",
             var_taskName: "",
             editTitle: false,
@@ -66,7 +70,7 @@ class ViewGroupTaskScreen extends React.Component {
             day.getHours() +
             ":" +
             day.getMinutes();
-        this.setState({ present_date: temp });
+        this.setState({ present_date: temp, creator: this.props.navigation.getParam("task_creator") });
     }
 
     componentDidMount() {
@@ -95,6 +99,7 @@ class ViewGroupTaskScreen extends React.Component {
                     task_desc: responseJson.items[0].desc,
                     task_dueDate: responseJson.items[0].due_date,
                     date_created: responseJson.items[0].date_created,
+                    task_status: responseJson.items[0].task_status,
                     var_taskName: responseJson.items[0].title,
                     var_taskDesc: responseJson.items[0].desc,
                     var_dueDate: responseJson.items[0].due_date,
@@ -105,6 +110,33 @@ class ViewGroupTaskScreen extends React.Component {
                 // alert("Please check your internet connection!");
             });
 
+
+        const url_2 =
+            "http://" +
+            this.props.navigation.getParam("server_ip", "") +
+            "/dlgtd/controller/getSubTaskController.php";
+        fetch(url_2, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0")
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+
+                this.setState({
+                    subTaskArray: responseJson.items,
+                });
+                responseJson = null;
+            })
+            .catch(error => {
+                alert(error + url);
+                // alert("Please check your internet connection!");
+            });
         this.timer = setInterval(() => {
             const url_2 =
                 "http://" +
@@ -122,46 +154,54 @@ class ViewGroupTaskScreen extends React.Component {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                
-                        (JSON.stringify(subTaskArray) == JSON.stringify(responseJson.items)) ?
+                    JSON.stringify(this.state.subTaskArray) == JSON.stringify(responseJson.items) ?
+                        null :
                         this.setState({
                             subTaskArray: responseJson.items,
-                        }) :
-                        null;
-                        responseJson = null;
+                        });
+                    responseJson = null;
                 })
                 .catch(error => {
-                    // alert(error + url);
+                    alert(error + url);
                     // alert("Please check your internet connection!");
                 });
-        }, 1000);
+        }, 100);
+
+        // alert(this.props.navigation.getParam("task_creator")); // CHECK IF THE USER IS THE CREATOR OF TASK
+        // this.timer = setInterval(() => {
+        //     const url_2 =
+        //         "http://" +
+        //         this.props.navigation.getParam("server_ip", "") +
+        //         "/dlgtd/controller/getSubTaskController.php";
+        //     fetch(url_2, {
+        //         method: "post",
+        //         header: {
+        //             Accept: "application/json",
+        //             "Content-type": "applicantion/json"
+        //         },
+        //         body: JSON.stringify({
+        //             task_id: this.props.navigation.getParam("task_id", "0")
+        //         })
+        //     })
+        //         .then(response => response.json())
+        //         .then(responseJson => {
+
+        //             (JSON.stringify(this.state.subTaskArray) == JSON.stringify(responseJson.items)) ?
+        //                 this.setState({
+        //                     subTaskArray: responseJson.items,
+        //                 }) :
+        //                 null;
+        //             responseJson = null;
+        //         })
+        //         .catch(error => {
+        //             alert(error + url);
+        //             // alert("Please check your internet connection!");
+        //         });
+        // }, 100);
     }
 
     componentWillUnmount() {
         clearInterval(this.timer);
-        this.setState({
-            isLoading: true,
-            isModalVisible: false,
-            ip_server: "",
-            user_id: "",
-            taskContainer: [],
-            task_name: "",
-            var_taskName: "",
-            editTitle: false,
-            task_desc: "",
-            var_taskDesc: "",
-            editDesc: false,
-            task_dueDate: "",
-            var_dueDate: "",
-            editDue: false,
-            present_date: "",
-            date_created: "",
-            subTaskArray: [],
-            subTaskID: "",
-            subTaskName: "",
-            subTaskDesc: "",
-            subTaskDue: "",
-        });
 
         var values = this.state.task_name === this.state.var_taskName ?
             '' : "task_name = '" + this.state.task_name + "'";
@@ -169,6 +209,7 @@ class ViewGroupTaskScreen extends React.Component {
             '' : (values !== '' ? ', ' : "") + "task_description = '" + this.state.task_desc + "'";
         values += this.state.task_dueDate === this.state.var_dueDate ?
             '' : (values !== '' ? ', ' : "") + "due_date = '" + this.state.task_dueDate + "' ";
+        values += (values !== '' ? ', ' : "") + "task_status = '" + this.state.task_status + "'";
         // alert(values);  
 
         if (values != '') {
@@ -199,13 +240,37 @@ class ViewGroupTaskScreen extends React.Component {
                     alert("Please check your internet connection!");
                 });
         }
+
+        this.setState({
+            isLoading: true,
+            isModalVisible: false,
+            ip_server: "",
+            user_id: "",
+            taskContainer: [],
+            task_name: "",
+            var_taskName: "",
+            editTitle: false,
+            task_desc: "",
+            var_taskDesc: "",
+            editDesc: false,
+            task_dueDate: "",
+            var_dueDate: "",
+            editDue: false,
+            present_date: "",
+            date_created: "",
+            subTaskArray: [],
+            subTaskID: "",
+            subTaskName: "",
+            subTaskDesc: "",
+            subTaskDue: "",
+        });
     }
 
     putSubTask = () => {
         const url =
             "http://" +
             this.state.ip_server +
-            "/dlgtd/controller/addSubTaskController.php";
+            "/dlgtd/controller/addGroupSubtaskController.php";
         fetch(url, {
             method: "post",
             header: {
@@ -234,23 +299,10 @@ class ViewGroupTaskScreen extends React.Component {
     }
 
     updateSubTask = () => {
-        var values = "subtask_name = '" + this.state.subTaskName + "'";
-
-        values += this.state.subTaskDesc !== '' ?
-            ", subtask_desc = '" + this.state.subTaskDesc + "'" : '';
-
-        values += this.state.subTaskDue !== '' ?
-            ", due_date = '" + this.state.subTaskDue + "'" : '';
-
-        values += this.state.subTaskAssign !== '' ?
-            ", email_invite = '" + this.state.subTaskAssign + "'" : '';
-
-        // alert(values + this.state.subTaskID + " - " + this.state.subTaskDesc);
-
         const url =
             "http://" +
             this.state.ip_server +
-            "/dlgtd/controller/updateSubtaskController.php";
+            "/dlgtd/controller/updateGroupSubtaskController.php";
         fetch(url, {
             method: "post",
             header: {
@@ -258,8 +310,13 @@ class ViewGroupTaskScreen extends React.Component {
                 "Content-type": "applicantion/json"
             },
             body: JSON.stringify({
+                user_id: this.state.user_id,
+                task_id: this.props.navigation.getParam("task_id", "0"),
                 subtask_id: this.state.subTaskID,
-                values: values
+                subtask_name: this.state.subTaskName,
+                subtask_desc: this.state.subTaskDesc,
+                due_date: this.state.subTaskDue,
+                invite: this.state.subTaskAssign
             })
         })
             .then(response => response.json())
@@ -307,20 +364,24 @@ class ViewGroupTaskScreen extends React.Component {
         return {
             headerTitle: (
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("AuthScreen")}
-                    style={{ flexDirection: "row", alignItems: "center" }}
+                  onPress={() => navigation.navigate("AuthScreen")}
+                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                    <DlgtdLogo />
-                    <Text>DLGTD</Text>
+                  <DlgtdLogo />
+                  <Text>DLGTD</Text>
                 </TouchableOpacity>
+                // <TouchableOpacity
+                //     onPress={() => navigation.navigate("AuthScreen")}
+                //     style={{ flexDirection: "row", alignItems: "center" }}
+                // >
+                //     <DlgtdLogo />
+                //     <Text>DLGTD</Text>
+                // </TouchableOpacity>
             ),
             headerRight: (
                 <View style={styles.rightNav}>
-                    <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-                        <Icon style={styles.navItem} name="search" size={25} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Icon style={styles.navItem} name="account-circle" size={25} />
+                    <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+                    <Icon style={styles.navItem} name="notifications" size={25} />
                     </TouchableOpacity>
                 </View>
             )
@@ -344,6 +405,13 @@ class ViewGroupTaskScreen extends React.Component {
             subTaskName: '',
             subTaskDesc: '',
             subTaskDue: ''
+        });
+    };
+
+    toggleTaskStatus = () => {
+        var temp = this.state.task_status == 'prioritize' ? "active" : "prioritize";
+        this.setState({
+            task_status: temp
         });
     };
 
@@ -405,6 +473,115 @@ class ViewGroupTaskScreen extends React.Component {
         );
     }
 
+    confirmDeleteSubtask = (id, subtask_name) => {
+        Alert.alert(
+            'Remove subtask!?',
+            'Are you sure you want to remove '+subtask_name+'?',
+            [
+                { text: 'Yes', onPress: () => this.deleteSubTask(id) },
+                { text: 'No' },
+            ],
+            { cancelable: false },
+        );
+    }
+
+    deleteSubTask = (id) => {
+        const url =
+            "http://" +
+            this.state.ip_server +
+            "/dlgtd/controller/deleteSubtaskController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+                subtask_id: id
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+    }
+
+    subTaskProgress = (id, progress) => {
+        const url =
+            "http://" +
+            this.state.ip_server +
+            "/dlgtd/controller/updateSubtaskProgressController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+                subtask_id: id,
+                progress: progress
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+    }
+
+    confirmLeaveTask = (id) => {
+        Alert.alert(
+            'Delete subtask!?',
+            'Are you sure you want to delete this subtask?',
+            [
+                { text: 'Yes', onPress: () => this.deleteSubTask(id) },
+                { text: 'No' },
+            ],
+            { cancelable: false },
+        );
+    }
+
+    leaveTask = (id) => {
+        const url =
+            "http://" +
+            this.state.ip_server +
+            "/dlgtd/controller/deleteSubtaskController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+                subtask_id: id
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+    }
+
     // editSubTask(subtask_id) { 
 
     render() {
@@ -412,7 +589,11 @@ class ViewGroupTaskScreen extends React.Component {
 
         let GroupSubTasks = this.state.subTaskArray.map((val, key) => {
             return <GroupSubTask key={key} keyval={key} val={val}
+                creator={this.state.creator}
                 user_id={this.state.user_id}
+                deleteSubTask={() => this.confirmDeleteSubtask(val.subtask_id, val.subtask_name)}
+                leaveTask={() => this.leaveTask(val.subtask_id)}
+                updateProgress={value => this.subTaskProgress(val.subtask_id, value)}
                 editSubTask={() => this.setState({
                     editSubTask: true,
                     subTaskID: val.subtask_id,
@@ -452,7 +633,7 @@ class ViewGroupTaskScreen extends React.Component {
                                     onChangeText={(subTaskAssign) => this.setState({ subTaskAssign })}
                                     value={this.state.subTaskAssign}
                                     style={formsStyle.md_textInput_children}
-                                    placeholder="Email" />
+                                    placeholder="Email / User code" />
                             </View>
 
                             <DatePicker
@@ -554,33 +735,54 @@ class ViewGroupTaskScreen extends React.Component {
                         </View>
                     </Modal>
                     <View style={formsStyle.formContainer}>
-                        <TaskTitleLabel
-                            editTitle={this.state.editTitle}
-                            task_name={this.state.task_name}
-                            onChangeTaskName={(task_name) => {
-                                this.setState({ task_name });
-                            }}
-                            onBack={() => {
-                                this.setState({ editTitle: false });
-                            }}
-                            onClick={() => {
-                                this.setState({ editTitle: true });
-                            }}
-                        />
-                        <DescLabel
-                            editDesc={this.state.editDesc}
-                            description={this.state.task_desc}
-                            onChangeDesc={(task_desc) => {
-                                this.setState({ task_desc });
-                            }}
-                            onBackDesc={() => {
-                                this.setState({ editDesc: false });
-                            }}
-                            onClickDesc={() => {
-                                this.setState({ editDesc: true });
-                            }}
-                        />
+                        {this.state.creator ?
+                            <TouchableOpacity style={styles.prioritizeButton} onPress={this.toggleTaskStatus}>
+                                <Icon name={this.state.task_status == 'prioritize' ? "star" : "star-border"} size={30} color={this.state.task_status == 'prioritize' ? "#f1c40f" : "#000"} />
+                            </TouchableOpacity>
+                            : null}
+                        {this.state.creator ?
+                            <TaskTitleLabel
+                                editTitle={this.state.editTitle}
+                                task_name={this.state.task_name}
+                                onChangeTaskName={(task_name) => {
+                                    this.setState({ task_name });
+                                }}
+                                onBack={() => {
+                                    this.setState({ editTitle: false });
+                                }}
+                                onClick={() => {
+                                    this.setState({ editTitle: true });
+                                }}
+                            />
+                            :
+                            <Text
+                                style={formsStyle.textHeader}>
+                                {this.state.task_name}
+                            </Text>}
+
+                        {this.state.creator ?
+                            <DescLabel
+                                editDesc={this.state.editDesc}
+                                description={this.state.task_desc}
+                                onChangeDesc={(task_desc) => {
+                                    this.setState({ task_desc });
+                                }}
+                                onBackDesc={() => {
+                                    this.setState({ editDesc: false });
+                                }}
+                                onClickDesc={() => {
+                                    this.setState({ editDesc: true });
+                                }}
+                            />
+                            :
+                            <Text
+                                style={formsStyle.textSub}>
+                                {this.state.task_desc != ""
+                                    ? this.state.task_desc
+                                    : "no description"}
+                            </Text>}
                         <DateCreatedLabel created_at={this.state.date_created} />
+                        { this.state.creator ? 
                         <DueDateLabel editDue={this.state.editDue} task_dueDate={this.state.task_dueDate}
                             present_date={this.state.present_date} editDue={this.state.editDue}
                             updateEditDue={() => {
@@ -590,12 +792,30 @@ class ViewGroupTaskScreen extends React.Component {
                                 this.setState({ task_dueDate: task_dueDate, editDue: false });
                             }}
                             editDueDate={() => this.setState({ editDue: true })} />
-
-                        <TouchableOpacity style={styles.deleteTaskButton}
-                            onPress={this.confirmDeleteTask.bind(this)}>
-                            <Icon name="close" size={30} />
-                        </TouchableOpacity>
-                        <AddSubTaskButton addSubTask={() => this.setState({ isModalVisible: true })} />
+                            : 
+                            <View>
+                            {
+                                (moment(this.state.task_dueDate).isValid()) ?
+                                <View
+                                    style={formsStyle.row2style}>
+                                    <Icon2 name="calendar-clock" size={25} color="#fff" />
+                                    <Text style={formsStyle.valContainer}>
+                                            {this.state.task_dueDate}
+                                    </Text>
+                                </View>
+                                : null
+                            }
+                            </View>
+                        }
+                        {this.state.creator ?
+                            <TouchableOpacity style={styles.deleteTaskButton}
+                                onPress={this.confirmDeleteTask.bind(this)}>
+                                <Icon name="close" size={30} />
+                            </TouchableOpacity>
+                            : null}
+                        {this.state.creator ?
+                            <AddSubTaskButton addSubTask={() => this.setState({ isModalVisible: true })} />
+                            : null}
                     </View>
                     {GroupSubTasks}
                 </ScrollView>

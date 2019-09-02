@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import AuthScreen from './src/components/auth/AuthScreen';
 import MainScreen from './src/components/pages/MainScreen';
+import NotificationScreen from './src/components/pages/NotificationScreen';
 import LoginScreen from './src/components/auth/LoginScreen';
 import LogoutScreen from './src/components/auth/LogoutScreen';
 import AddTaskScreen from './src/components/pages/AddTaskScreen';
@@ -17,12 +18,14 @@ import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
 import AddGrouptaskScreen from './src/components/pages/AddGroupTaskScreen';
 import ViewGroupTaskScreen from './src/components/pages/ViewGroupTaskScreen';
+import SubscriptionScreen from './src/components/pages/SubscriptionScreen';
 
 const AppStack = createStackNavigator(
     {
         Main: { screen: MainScreen },
         ViewTask: { screen: ViewTaskScreen },
-        AddTask: { screen: AddTaskScreen }
+        AddTask: { screen: AddTaskScreen },
+        Notification: { screen: NotificationScreen }
     }
 );
 
@@ -76,6 +79,7 @@ const Drawer = createDrawerNavigator(
     {
         Tabs: { screen: Tabs },
         GroupStack: { screen: GroupStack },
+        Subscription: { screen: SubscriptionScreen },
         Logout: { screen: LogoutScreen },
     }
 );

@@ -11,10 +11,11 @@ export default class LogoutScreen extends React.Component {
   _bootstrapAsync = async () => {
     try {
       await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("user_id");
     } catch (exception) {
-      this.props.navigation.navigate("Auth");
+      this.props.navigation.navigate("AuthScreen");
     }
-    this.props.navigation.navigate("Auth");
+    this.props.navigation.navigate("AuthScreen");
   };
 
   // Render any loading content that you like here

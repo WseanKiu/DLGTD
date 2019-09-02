@@ -45,6 +45,8 @@ class ViewTaskScreen extends React.Component {
       editDue: false,
       present_date: "",
       date_created: "",
+      progress: 0,
+      total_progress: 0,
       subTaskArray: [],
       subTaskName: "",
       subTaskDesc: "",
@@ -96,6 +98,8 @@ class ViewTaskScreen extends React.Component {
           task_dueDate: responseJson.items[0].due_date,
           task_status: responseJson.items[0].task_status,
           date_created: responseJson.items[0].date_created,
+          progress: responseJson.items[0].progress,
+          total_progress: responseJson.items[0].total_progress,
           var_taskName: responseJson.items[0].title,
           var_taskDesc: responseJson.items[0].desc,
           var_dueDate: responseJson.items[0].due_date,
@@ -265,19 +269,19 @@ class ViewTaskScreen extends React.Component {
   }
 
   updateSubTask = () => {
-    var values = "subtask_name = '" + this.state.subTaskName + "'";
+    // var values = "subtask_name = '" + this.state.subTaskName + "'";
 
-    // values += this.state.subTaskDesc !== '' ?
-    //   ", subtask_desc = '" + this.state.subTaskDesc + "'" : '';
+    // // values += this.state.subTaskDesc !== '' ?
+    // //   ", subtask_desc = '" + this.state.subTaskDesc + "'" : '';
 
-    values += ", subtask_desc = '" + this.state.subTaskDesc + "'";
-    // values += this.state.subTaskDue !== '' ?
-    //   ", due_date = '" + this.state.subTaskDue + "'" : '';
+    // values += ", subtask_desc = '" + this.state.subTaskDesc + "'";
+    // // values += this.state.subTaskDue !== '' ?
+    // //   ", due_date = '" + this.state.subTaskDue + "'" : '';
 
-    values += ", due_date = " + (this.state.subTaskDue != ''? "'" + this.state.subTaskDue + "'" : null) + "";
-    // alert(values + this.state.subTaskID + " - " + this.state.subTaskDesc);
+    // values += ", due_date = " + (this.state.subTaskDue != ''? "'" + this.state.subTaskDue + "'" : null) + "";
+    // // alert(values + this.state.subTaskID + " - " + this.state.subTaskDesc);
 
-    alert(values);
+    // alert(values);
 
     const url =
       "http://" +
@@ -291,7 +295,9 @@ class ViewTaskScreen extends React.Component {
       },
       body: JSON.stringify({
         subtask_id: this.state.subTaskID,
-        values: values
+        subtask_name: this.state.subTaskName,
+        subtask_desc: this.state.subTaskDesc,
+        due_date: this.state.subTaskDue
       })
     })
       .then(response => response.json())
@@ -302,7 +308,7 @@ class ViewTaskScreen extends React.Component {
       })
       .catch(error => {
         // alert(error + url);
-        alert(error + "Please check your internet connection!");
+        // alert(error + "Please check your internet connection!");
       });
   }
 
@@ -447,6 +453,7 @@ class ViewTaskScreen extends React.Component {
         "Content-type": "applicantion/json"
       },
       body: JSON.stringify({
+        task_id: this.props.navigation.getParam("task_id", "0"),
         subtask_id: id
       })
     })
