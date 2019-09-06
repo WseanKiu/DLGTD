@@ -53,7 +53,13 @@ class MainScreen extends React.Component {
       headerRight: (
         <View style={styles.rightNav}>
           <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-            <Icon style={styles.navItem} name="notifications" size={25} />
+            {/* <Badge value="2" status='primary' /> */}
+            <Icon style={styles.navItem} name="notifications" size={27} />
+            <Badge
+              status="error"
+              value="5"
+              containerStyle={{ position: 'absolute', top: -4, right: 9 }}
+            />
           </TouchableOpacity>
           {/* <TouchableOpacity>
             <Icon style={styles.navItem} name="account-circle" size={25} />
@@ -119,34 +125,58 @@ class MainScreen extends React.Component {
           paddingTop: 10,
           paddingLeft: 30,
           paddingRight: 30,
-          paddingBottom: 2
+          paddingBottom: 10,
+
+          // shadowColor: '#00000021',
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 6,
+          // },
+          // shadowOpacity: 0.37,
+          // shadowRadius: 7.49,
+          // elevation: 12,
+
+          marginLeft: 20,
+          marginRight: 20,
+          // marginTop:-10,
+          marginVertical: 5,
+          backgroundColor: "white",
+          // padding: 0,
+          flexDirection: 'row',
+          borderRadius: 10,
         }}
       >
         <View style={{ flex: 1, alignContent: "center" }}>
-        <View style={{flexDirection: 'row', alignContent: 'center'}}>
-          {item.task_status == 'prioritize'? <Icon name="star" size={25} color="#f1c40f"/> : null}
-          <Text style={{ fontSize: 20, color: "green" }}>{item.title}</Text>
-        </View>
+          <View style={{ flexDirection: 'row', alignContent: 'center' }}>
+            {item.task_status == 'prioritize' ? <Icon name="star" size={25} color="#f1c40f" /> : null}
+            <Text style={{
+              fontSize: 18,
+              flex: 1,
+              alignSelf: 'center',
+              color: "green",
+              fontWeight: 'bold'
+            }}>{item.title}</Text>
+          </View>
           {item.desc != "" ? (
             <Text>{item.desc}</Text>
           ) : (
               <Text>no description</Text>
             )}
-        </View>
 
-        { item.due_date ?
-          <View style={{flexDirection: 'row'}}>
-            <Icon_2 name="calendar-clock" size={18} color="#e74c3c"/>
-            <Text style={{fontSize: 10, paddingLeft: 5, alignSelf: 'center', paddingBottom: 10}}>{item.due_date}</Text>
-            {/* <Badge value={item.due_date} status='primary' /> */}
-          </View>
-          : null }
-          
+          {item.due_date ?
+            <View style={{ flexDirection: 'row' }}>
+              <Icon_2 name="calendar-clock" size={18} color="#e74c3c" />
+              <Text style={{ fontSize: 10, paddingLeft: 5, alignSelf: 'center', paddingBottom: 10 }}>{item.due_date}</Text>
+              {/* <Badge value={item.due_date} status='primary' /> */}
+            </View>
+            : null}
+
           {
             item.total_progress > 0 ?
-            <Bar progress={item.progress / item.total_progress} width={null} />
-            : null
+              <Bar progress={item.progress / item.total_progress} width={null} />
+              : null
           }
+        </View>
       </TouchableOpacity>
     );
   };
@@ -182,7 +212,7 @@ class MainScreen extends React.Component {
         <ActivityIndicator size="large" color="#000000" animating />
       </View>
     ) : (
-        <View style={styles.container}>
+        <View style={[styles.container, {}]}>
           <FloatingAddButton navigation={this.props.navigation} />
           <FlatList
             data={this.state.taskContainer}

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 5,
         borderRadius: 10,
-        backgroundColor: '#ecf0f1',
+        backgroundColor: '#ffffff',
     },
     cont_box1: {
         justifyContent: 'center',

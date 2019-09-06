@@ -23,7 +23,7 @@ import SubTask from "../helpers/viewTask/SubTask";
 import formsStyle from "../styles/formsStyle";
 import styles from "../styles/style";
 
-class ViewTaskScreen extends React.Component {
+class ViewSubtaskScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,24 +33,6 @@ class ViewTaskScreen extends React.Component {
       ip_server: "",
       user_id: "",
       taskContainer: [],
-      task_status: "",
-      task_name: "",
-      var_taskName: "",
-      editTitle: false,
-      task_desc: "",
-      var_taskDesc: "",
-      editDesc: false,
-      task_dueDate: "",
-      var_dueDate: "",
-      editDue: false,
-      present_date: "",
-      date_created: "",
-      progress: 0,
-      total_progress: 0,
-      subTaskArray: [],
-      subTaskName: "",
-      subTaskDesc: "",
-      subTaskDue: "",
     };
   }
 
@@ -269,20 +251,6 @@ class ViewTaskScreen extends React.Component {
   }
 
   updateSubTask = () => {
-    // var values = "subtask_name = '" + this.state.subTaskName + "'";
-
-    // // values += this.state.subTaskDesc !== '' ?
-    // //   ", subtask_desc = '" + this.state.subTaskDesc + "'" : '';
-
-    // values += ", subtask_desc = '" + this.state.subTaskDesc + "'";
-    // // values += this.state.subTaskDue !== '' ?
-    // //   ", due_date = '" + this.state.subTaskDue + "'" : '';
-
-    // values += ", due_date = " + (this.state.subTaskDue != ''? "'" + this.state.subTaskDue + "'" : null) + "";
-    // // alert(values + this.state.subTaskID + " - " + this.state.subTaskDesc);
-
-    // alert(values);
-
     const url =
       "http://" +
       this.state.ip_server +
@@ -697,61 +665,4 @@ class ViewTaskScreen extends React.Component {
   }
 }
 
-export default ViewTaskScreen;
-
-
-// TASKNAME
-// {this.state.editTitle ? (
-//   <TextInput
-//     style={formsStyle.textInput}
-//     placeholder="Title"
-//     autoFocus
-//     onChangeText={task_name => this.setState({ task_name })}
-//     value={this.state.task_name}
-//     onBlur={() => this.setState({ editTitle: false })}
-//   />
-// ) : (
-//     <Text
-//       onPress={() => this.setState({ editTitle: true })}
-//       style={formsStyle.textHeader}
-//     >
-//       {this.state.task_name}
-//     </Text>
-//   )}
-
-// DESCRIPTION
-// {this.state.editDesc ? (
-//   <TextInput
-//     style={formsStyle.textInputChildren}
-//     placeholder="Description"
-//     autoFocus
-//     onChangeText={task_desc => this.setState({ task_desc })}
-//     value={this.state.task_desc}
-//     onBlur={() => this.setState({ editDesc: false })}
-//   />
-// ) : (
-//     <Text
-//       onPress={() => this.setState({ editDesc: true })}
-//       style={formsStyle.textSub}
-//     >
-//       {this.state.task_desc != ""
-//         ? this.state.task_desc
-//         : "no description"}
-//     </Text>
-//   )}
-
-// DUE DATE
-// {this.state.editDue ? (
-//   <DueDateLabel task_dueDate={this.state.task_dueDate}
-//     present_date={this.state.present_date} editDue={this.state.editDue}
-//     updateEditDue={() => {
-//       this.setState({ editDue: false });
-//     }}
-//     setDueDate={task_dueDate => {
-//       this.setState({ task_dueDate: task_dueDate, editDue: false });
-//     }} />
-// ) : (
-//     <Text onPress={() => this.setState({ editDue: true })}>
-//       {this.state.task_dueDate}
-//     </Text>
-//   )}
+export default ViewSubtaskScreen;

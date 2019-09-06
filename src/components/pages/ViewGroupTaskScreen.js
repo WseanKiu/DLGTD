@@ -542,12 +542,12 @@ class ViewGroupTaskScreen extends React.Component {
             });
     }
 
-    confirmLeaveTask = (id) => {
+    confirmLeaveTask = (id, subtask_name) => {
         Alert.alert(
-            'Delete subtask!?',
-            'Are you sure you want to delete this subtask?',
+            'Leave '+subtask_name+'!?',
+            'Are you sure you want to leave this task?',
             [
-                { text: 'Yes', onPress: () => this.deleteSubTask(id) },
+                { text: 'Yes', onPress: () => this.leaveTask(id) },
                 { text: 'No' },
             ],
             { cancelable: false },
@@ -558,7 +558,7 @@ class ViewGroupTaskScreen extends React.Component {
         const url =
             "http://" +
             this.state.ip_server +
-            "/dlgtd/controller/deleteSubtaskController.php";
+            "/dlgtd/controller/leaveTaskController.php";
         fetch(url, {
             method: "post",
             header: {
@@ -567,7 +567,8 @@ class ViewGroupTaskScreen extends React.Component {
             },
             body: JSON.stringify({
                 task_id: this.props.navigation.getParam("task_id", "0"),
-                subtask_id: id
+                subtask_id: id,
+                user_id: this.state.user_id
             })
         })
             .then(response => response.json())
@@ -592,7 +593,7 @@ class ViewGroupTaskScreen extends React.Component {
                 creator={this.state.creator}
                 user_id={this.state.user_id}
                 deleteSubTask={() => this.confirmDeleteSubtask(val.subtask_id, val.subtask_name)}
-                leaveTask={() => this.leaveTask(val.subtask_id)}
+                leaveTask={() => this.confirmLeaveTask(val.subtask_id, val.subtask_name)}
                 updateProgress={value => this.subTaskProgress(val.subtask_id, value)}
                 editSubTask={() => this.setState({
                     editSubTask: true,
@@ -609,7 +610,7 @@ class ViewGroupTaskScreen extends React.Component {
                 <ActivityIndicator size="large" color="tomato" animating />
             </View>
         ) : (
-                <ScrollView>
+                <ScrollView style={{ backgroundColor:"#ebf0f7" }}>
                     <Modal
                         isVisible={this.state.isModalVisible}>
                         <View style={styles.modalContainer}>

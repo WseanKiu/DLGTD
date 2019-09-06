@@ -18,7 +18,10 @@ import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
 import AddGrouptaskScreen from './src/components/pages/AddGroupTaskScreen';
 import ViewGroupTaskScreen from './src/components/pages/ViewGroupTaskScreen';
+import ProfileScreen from './src/components/pages/ProfileScreen';
+import editProfileScreen from './src/components/pages/editProfileScreen';
 import SubscriptionScreen from './src/components/pages/SubscriptionScreen';
+import ThankU4SubsScreen from './src/components/pages/ThankU4SubsScreen';
 
 const AppStack = createStackNavigator(
     {
@@ -34,6 +37,15 @@ const GroupStack = createStackNavigator(
         GroupTaskScreen: { screen: GroupTaskScreen },
         ViewGroupTaskScreen: { screen: ViewGroupTaskScreen },
         AddGroupTask: { screen: AddGrouptaskScreen }
+    }
+);
+
+const ProfileStack = createStackNavigator(
+    {
+        Profile: { screen: ProfileScreen },
+        EditProfile: { screen: editProfileScreen},
+        // Subscription: { screen: SubscriptionScreen },
+        ThankYou: { screen: ThankU4SubsScreen }
     }
 );
 
@@ -77,9 +89,8 @@ const Tabs = createBottomTabNavigator(
 
 const Drawer = createDrawerNavigator(
     {
-        Tabs: { screen: Tabs },
-        GroupStack: { screen: GroupStack },
-        Subscription: { screen: SubscriptionScreen },
+        Home: { screen: Tabs },
+        Profile: { screen: ProfileStack },
         Logout: { screen: LogoutScreen },
     }
 );

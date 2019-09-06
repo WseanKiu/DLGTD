@@ -15,6 +15,7 @@ export default StyleSheet.create({
     //BODY
     container: {
         flex: 1,
+        backgroundColor: "#ebf0f7",
         // alignItems: 'center',
         // alignContent: 'center',
     },    
@@ -23,14 +24,27 @@ export default StyleSheet.create({
     },
 
     // NOTIFICATION
-    notifContainer: {
-        flex: 1,
-        paddingTop: 10,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingBottom: 2,
-        backgroundColor: '#ecf0f1'    
+    notifBackground: {
+        backgroundColor: '#DCDCDC',
+        paddingLeft: 10,
+        paddingRight: 10,
+        flex: 1
     },
+    notifContainer: {
+        padding:10,
+        marginTop:5,
+        marginBottom:5,
+        backgroundColor: '#FFFFFF',
+        borderRadius:10,
+    },
+    // notifContainer: {
+    //     flex: 1,
+    //     paddingTop: 10,
+    //     paddingLeft: 30,
+    //     paddingRight: 30,
+    //     paddingBottom: 2,
+    //     backgroundColor: '#ecf0f1'    
+    // },
 
     notifTabs: {
         paddingTop: 5,
