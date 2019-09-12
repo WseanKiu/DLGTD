@@ -27,12 +27,24 @@ export default class GroupSubTask extends Component {
     render() {
         return (
             <TouchableOpacity key={this.props.keyval} style={styles.card}
-                onLongPress={this.props.creator ? this.props.editSubTask : null} activeOpacity={0.6}>
+                onLongPress={this.props.creator ? this.props.editSubTask : null} activeOpacity={0.6}
+                onPress={() => this.props.navigation.navigate('ViewSubtask', { subtask_id: this.props.val.subtask_id })}>
+                {this.props.val.total_progress == 0 ?
+                    <View style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        right: -5
+                    }}>
+                        <TouchableOpacity>
+                            <Icon style={{ marginRight: 5 }} name={this.props.val.status == "finished"? "ios-checkmark-circle" : "md-radio-button-off"} size={25} color="#8e8e93" />
+                        </TouchableOpacity>
+                    </View>
+                    : null}
                 <View style={styles.cardContent}>
                     <Text style={styles.description}>{this.props.val.subtask_name}</Text>
-                    {this.props.val.subtask_desc != ''? 
-                    <Text style={styles.description}>{this.props.val.subtask_desc}</Text>
-                    : null    
+                    {this.props.val.subtask_desc != '' ?
+                        <Text style={styles.description}>{this.props.val.subtask_desc}</Text>
+                        : null
                     }
                     {/* { alert(this.props.val.progress)} */}
                     {/* {this.props.val.due_date ?
@@ -58,17 +70,11 @@ export default class GroupSubTask extends Component {
                             : null
                     }
 
-                    {this.props.val.user_id == this.props.user_id ?
-                        <View>
-                            <Slider
-                                onSlidingComplete={this.props.updateProgress}
-                                value={parseFloat(this.props.val.progress)}
-                                onValueChange={(value) => this.setState({ progress: value })}
-                            />
-                            {/* <Text>progress: {this.state.progress}</Text> */}
-                        </View> :
+                    {this.props.val.total_progress > 0 ?
                         <Bar style={{ marginVertical: 10 }} progress={this.props.val.progress} width={null} />
+                        : null
                     }
+                    {/* <Bar style={{ marginVertical: 10 }} progress={this.props.val.progress} width={null} /> */}
                     {this.props.creator ?
                         <TouchableOpacity style={styles.taskDelete} onPress={this.props.deleteSubTask}>
                             <Icon style={{ marginRight: 10 }} name="md-close" size={25} />

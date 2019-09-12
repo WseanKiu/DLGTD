@@ -28,7 +28,6 @@ export default class ProfileScreen extends Component {
             user_lname: "",
             user_email: "",
             user_contacts: "",
-            user_address: "",
             user_bdate: "",
             user_premium: false,
             exp_date: "",
@@ -85,7 +84,6 @@ export default class ProfileScreen extends Component {
                 .then(responseJson => {
                     this.setState({
                         user_email: responseJson.items[0].user_email,
-                        user_address: responseJson.items[0].user_address,
                         user_bdate: responseJson.items[0].user_bdate,
                         user_fname: responseJson.items[0].user_fname,
                         user_lname: responseJson.items[0].user_lname,
@@ -200,7 +198,6 @@ export default class ProfileScreen extends Component {
                             <Text style={styles.description}>Email: {this.state.user_email}</Text>
                             <Text style={styles.description}>Contact number: {this.state.user_contacts}</Text>
                             <Text style={styles.description}>Birthdate: {this.state.user_bdate}</Text>
-                            <Text style={styles.description}>Address: {this.state.user_address}</Text>
                             { this.state.user_premium ? 
                             <Text style={styles.description}>Subscription expire: {this.state.exp_date}</Text>
                             : null }

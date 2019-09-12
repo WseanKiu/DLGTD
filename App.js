@@ -12,15 +12,16 @@ import AuthScreen from './src/components/auth/AuthScreen';
 import MainScreen from './src/components/pages/MainScreen';
 import NotificationScreen from './src/components/pages/NotificationScreen';
 import LoginScreen from './src/components/auth/LoginScreen';
+import RegisterScreen from './src/components/pages/RegisterScreen';
 import LogoutScreen from './src/components/auth/LogoutScreen';
 import AddTaskScreen from './src/components/pages/AddTaskScreen';
 import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
 import AddGrouptaskScreen from './src/components/pages/AddGroupTaskScreen';
 import ViewGroupTaskScreen from './src/components/pages/ViewGroupTaskScreen';
+import ViewSubtaskScreen from './src/components/pages/ViewSubtaskScreen';
 import ProfileScreen from './src/components/pages/ProfileScreen';
 import editProfileScreen from './src/components/pages/editProfileScreen';
-import SubscriptionScreen from './src/components/pages/SubscriptionScreen';
 import ThankU4SubsScreen from './src/components/pages/ThankU4SubsScreen';
 
 const AppStack = createStackNavigator(
@@ -36,7 +37,8 @@ const GroupStack = createStackNavigator(
     {
         GroupTaskScreen: { screen: GroupTaskScreen },
         ViewGroupTaskScreen: { screen: ViewGroupTaskScreen },
-        AddGroupTask: { screen: AddGrouptaskScreen }
+        AddGroupTask: { screen: AddGrouptaskScreen },
+        ViewSubtask: { screen: ViewSubtaskScreen }
     }
 );
 
@@ -97,7 +99,8 @@ const Drawer = createDrawerNavigator(
 
 const AuthStack = createStackNavigator(
     {
-        Login: LoginScreen
+        Login: LoginScreen,
+        Register: RegisterScreen
     },
     {
         headerMode: 'none',

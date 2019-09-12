@@ -55,7 +55,7 @@ export default class LoginScreen extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (responseJson.error === false) {
-                    this.setState({ 
+                    this.setState({
                         user_id: responseJson.user_id,
                         user_code: responseJson.user_code
                     });
@@ -84,9 +84,10 @@ export default class LoginScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <Image style={styles.logo} source={require('../../assets/logo/dlgtd_logo1.png')} />
+
                 <View style={styles.inputContainer}>
-                    {/* <Icon name="person" size={25} /> */}
-                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/message/ultraviolet/50/3498db' }} /> */}
+                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/user/ultraviolet/50/3498db' }} /> */}
                     <TextInput style={styles.inputs}
                         placeholder="username"
                         keyboardType="email-address"
@@ -95,8 +96,7 @@ export default class LoginScreen extends React.Component {
                 </View>
 
                 <View style={styles.inputContainer}>
-                    {/* <Icon name="vpn_key" size={25} /> */}
-                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} /> */}
+                    {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/message/ultraviolet/50/3498db' }} /> */}
                     <TextInput style={styles.inputs}
                         placeholder="Password"
                         secureTextEntry={true}
@@ -104,18 +104,47 @@ export default class LoginScreen extends React.Component {
                         onChangeText={(password) => this.setState({ password })} />
                 </View>
 
-                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this.authLogin}>
-                    <Text style={styles.loginText}>Login</Text>
+                <TouchableHighlight style={[styles.buttonContainer, styles.sendButton]} onPress={this.authLogin}>
+                    <Text style={styles.buttonText}>Login</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('restore_password')}>
-                    <Text>Forgot your password?</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('register')}>
+                <TouchableHighlight onPress={() => this.props.navigation.navigate("Register")}>
                     <Text>Register</Text>
                 </TouchableHighlight>
             </View>
+            // <View style={styles.container}>
+            //     <View style={styles.inputContainer}>
+            //         {/* <Icon name="person" size={25} /> */}
+            //         {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/message/ultraviolet/50/3498db' }} /> */}
+            //         <TextInput style={styles.inputs}
+            //             placeholder="username"
+            //             keyboardType="email-address"
+            //             underlineColorAndroid='transparent'
+            //             onChangeText={(username) => this.setState({ username })} />
+            //     </View>
+
+            //     <View style={styles.inputContainer}>
+            //         {/* <Icon name="vpn_key" size={25} /> */}
+            //         {/* <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} /> */}
+            //         <TextInput style={styles.inputs}
+            //             placeholder="Password"
+            //             secureTextEntry={true}
+            //             underlineColorAndroid='transparent'
+            //             onChangeText={(password) => this.setState({ password })} />
+            //     </View>
+
+            //     <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this.authLogin}>
+            //         <Text style={styles.loginText}>Login</Text>
+            //     </TouchableHighlight>
+
+            //     <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('restore_password')}>
+            //         <Text>Forgot your password?</Text>
+            //     </TouchableHighlight>
+
+            //     <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('register')}>
+            //         <Text>Register</Text>
+            //     </TouchableHighlight>
+            // </View>
         );
     }
 }
@@ -125,15 +154,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#DCDCDC',
-        // backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
+    },
+    logo: {
+        width: 150,
+        height: 150,
+        justifyContent: 'center',
+        marginBottom: 20,
     },
     inputContainer: {
-        borderBottomColor: '#F5FCFF',
+        borderBottomColor: '#657b83',
         backgroundColor: '#FFFFFF',
         borderRadius: 30,
         borderBottomWidth: 1,
-        width: 260,
+        width: 250,
         height: 45,
         marginBottom: 20,
         flexDirection: 'row',
@@ -156,18 +190,66 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 1,
-        width: 260,
+        marginBottom: 20,
+        width: 220,
         borderRadius: 30,
     },
-    loginButton: {
-        color: '#ffffff',
-        backgroundColor: "#00b5ec",
-        height: 45,
-        width: 260,
-        borderRadius: 30,
+    sendButton: {
+        backgroundColor: "#FF4500",
     },
-    loginText: {
-        color: '#ffffff',
+    buttonText: {
+        color: 'white',
     }
 });
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         backgroundColor: '#DCDCDC',
+//         // backgroundColor: '#ffffff',
+//     },
+//     inputContainer: {
+//         borderBottomColor: '#F5FCFF',
+//         backgroundColor: '#FFFFFF',
+//         borderRadius: 30,
+//         borderBottomWidth: 1,
+//         width: 260,
+//         height: 45,
+//         marginBottom: 20,
+//         flexDirection: 'row',
+//         alignItems: 'center'
+//     },
+//     inputs: {
+//         height: 45,
+//         marginLeft: 16,
+//         borderBottomColor: '#FFFFFF',
+//         flex: 1,
+//     },
+//     inputIcon: {
+//         width: 30,
+//         height: 30,
+//         marginLeft: 15,
+//         justifyContent: 'center'
+//     },
+//     buttonContainer: {
+//         height: 45,
+//         flexDirection: 'row',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         marginBottom: 1,
+//         width: 260,
+//         borderRadius: 30,
+//     },
+//     loginButton: {
+//         color: '#ffffff',
+//         backgroundColor: "#00b5ec",
+//         height: 45,
+//         width: 260,
+//         borderRadius: 30,
+//     },
+//     loginText: {
+//         color: '#ffffff',
+//     }
+// });

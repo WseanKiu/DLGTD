@@ -16,7 +16,7 @@ export default class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage
   _bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem("userToken");
-    await AsyncStorage.setItem("server_ip", "192.168.43.168");
+    await AsyncStorage.setItem("server_ip", "localhost");
     // await AsyncStorage.setItem("server_ip", "192.168.43.168");
 
     // This will switch to the App screen or Auth screen
