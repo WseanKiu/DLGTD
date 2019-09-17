@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DatePicker from "react-native-datepicker";
-import { emptyStatement, isEmptyStatement } from '@babel/types';
 
 export default class RegisterScreen extends React.Component {
     constructor(props) {

@@ -16,8 +16,8 @@ export default class ThankU4SubsScreen extends Component {
     return (
       <View style={styles.container}>
         <Image style={styles.icon} source={{uri: "https://png.icons8.com/good-quality/ultraviolet/200/3498db"}} />
-        <Text style={styles.title}>Congratulation, your order is accepted</Text>
-        <Text style={styles.description}>Lorem ipsum dolor sit amet, sed te sumo euismod, doming molestiae consetetur nec ne. Cu quem aeterno labores eos</Text>
+        <Text style={styles.title}>Thank you for subscribing!</Text>
+        <Text style={styles.description}></Text>
         <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.props.navigation.navigate('Profile')}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableHighlight>

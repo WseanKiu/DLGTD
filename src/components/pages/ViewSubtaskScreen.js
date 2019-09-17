@@ -5,39 +5,34 @@ import {
   Text,
   AsyncStorage,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
 } from "react-native";
-import DlgtdLogo from "../../assets/logo/DlgtdLogo";
-import Modal from "react-native-modal";
 import DatePicker from "react-native-datepicker";
+import DlgtdLogo from "../../assets/logo/DlgtdLogo";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Icon2 from "react-native-vector-icons/Ionicons";
-import style2 from "../styles/style";
+import Icon_2 from "react-native-vector-icons/MaterialCommunityIcons";
+import Modal from "react-native-modal";
+import DateCreatedLabel from "../helpers/viewTask/DateCreatedLabel";
+import DueDateLabel from "../helpers/viewTask/DueDateLabel";
+import TaskTitleLabel from "../helpers/viewTask/TaskTitleLabel";
+import DescLabel from "../helpers/viewTask/DescLabel";
+import AddSubTaskButton from "../helpers/viewTask/AddSubTaskButton";
+import SubTask from "../helpers/viewTask/SubTask";
 import formsStyle from "../styles/formsStyle";
-import Lvl2Task from '../helpers/groupTask/Lvl2Task';
+import styles from "../styles/style";
 
 class ViewSubtaskScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
       isModalVisible: false,
       editSubTask: false,
       ip_server: "",
       user_id: "",
       taskContainer: [],
-      subtask_name: "",
-      subtask_desc: "",
-      date_updated: "",
-      status: "",
-      due_date: "",
-      progress: "",
-      total_progress: "",
-      assigned_to: "",
-      full_name: "",
     };
   }
 
@@ -62,7 +57,7 @@ class ViewSubtaskScreen extends React.Component {
     const url =
       "http://" +
       this.props.navigation.getParam("server_ip", "") +
-      "/dlgtd/controller/getSubtaskInfoController.php";
+      "/dlgtd/controller/viewTaskController.php";
     fetch(url, {
       method: "post",
       header: {
@@ -71,108 +66,72 @@ class ViewSubtaskScreen extends React.Component {
       },
       body: JSON.stringify({
         user_id: this.state.user_id,
-        subtask_id: this.props.navigation.getParam("subtask_id", "0")
+        task_id: this.props.navigation.getParam("task_id", "0")
       })
     })
       .then(response => response.json())
       .then(responseJson => {
+        //   alert(responseJson.items[0].title);
         this.setState({
-          subtask_name: responseJson.items[0].subtask_name,
-          subtask_desc: responseJson.items[0].subtask_desc,
-          date_updated: responseJson.items[0].date_updated,
-          status: responseJson.items[0].status,
-          due_date: responseJson.items[0].due_date,
+          taskContainer: responseJson.items[0],
+          isLoading: false,
+          task_name: responseJson.items[0].title,
+          task_desc: responseJson.items[0].desc,
+          task_dueDate: responseJson.items[0].due_date,
+          task_status: responseJson.items[0].task_status,
+          date_created: responseJson.items[0].date_created,
           progress: responseJson.items[0].progress,
           total_progress: responseJson.items[0].total_progress,
-          assigned_to: responseJson.items[0].assigned_to,
-          full_name: responseJson.items[0].full_name
+          var_taskName: responseJson.items[0].title,
+          var_taskDesc: responseJson.items[0].desc,
+          var_dueDate: responseJson.items[0].due_date,
         });
-        responseJson = null;
       })
       .catch(error => {
         alert(error + url);
+        // alert("Please check your internet connection!");
       });
 
-
-    const url2 = "http://" +
+    const url_2 =
+      "http://" +
       this.props.navigation.getParam("server_ip", "") +
-      "/dlgtd/controller/getSubSubtaskController.php";
-    fetch(url2, {
+      "/dlgtd/controller/getSubTaskController.php";
+    fetch(url_2, {
       method: "post",
       header: {
         Accept: "application/json",
         "Content-type": "applicantion/json"
       },
       body: JSON.stringify({
-        subtask_id: this.props.navigation.getParam("subtask_id", "0")
+        task_id: this.props.navigation.getParam("task_id", "0")
       })
     })
       .then(response => response.json())
       .then(responseJson => {
+
         this.setState({
-          taskContainer: responseJson.items,
+          subTaskArray: responseJson.items,
         });
         responseJson = null;
       })
       .catch(error => {
-        alert(error + url);
+        // alert(error + url);
+        // alert("Please check your internet connection!");
       });
 
-    // alert(this.props.navigation.getParam("subtask_id", "0") + " - " +this.state.taskContainer);
-
-    // this.hotResponseHander.bind(this);
-  }
-
-  hotResponseHander() {
     this.timer = setInterval(() => {
-      const url =
+      const url_2 =
         "http://" +
         this.props.navigation.getParam("server_ip", "") +
         "/dlgtd/controller/getSubTaskController.php";
-      fetch(url, {
+      fetch(url_2, {
         method: "post",
         header: {
           Accept: "application/json",
           "Content-type": "applicantion/json"
         },
         body: JSON.stringify({
-          task_id: this.props.navigation.getParam("subtask_id", "0")
-        })
-      })
-        .then(response => response.json())
-        .then(responseJson => {
-          JSON.stringify(this.state.date_updated) == JSON.stringify(responseJson.items[0].date_updated) ?
-            null :
-            this.setState({
-              subtask_name: responseJson.items[0].subtask_name,
-              subtask_desc: responseJson.items[0].subtask_desc,
-              date_updated: responseJson.items[0].date_updated,
-              status: responseJson.items[0].status,
-              due_date: responseJson.items[0].due_date,
-              progress: responseJson.items[0].progress,
-              total_progress: responseJson.items[0].total_progress,
-              assigned_to: responseJson.items[0].assigned_to,
-              full_name: responseJson.items[0].full_name
-            });
-          responseJson = null;
-        })
-        .catch(error => {
-          // alert(error + url);
-          // alert("Please check your internet connection!");
-        });
-
-      const url2 =
-        "http://" +
-        this.props.navigation.getParam("server_ip", "") +
-        "/dlgtd/controller/getSubTaskController.php";
-      fetch(url2, {
-        method: "post",
-        header: {
-          Accept: "application/json",
-          "Content-type": "applicantion/json"
-        },
-        body: JSON.stringify({
-          task_id: this.props.navigation.getParam("subtask_id", "0")
+          task_id: this.props.navigation.getParam("task_id", "0")
         })
       })
         .then(response => response.json())
@@ -191,14 +150,164 @@ class ViewSubtaskScreen extends React.Component {
     }, 100);
   }
 
-  _getAsyncData = async () => {
-    const server_ip = await AsyncStorage.getItem("server_ip");
-    const user_id = await AsyncStorage.getItem("user_id");
+  componentWillUnmount() {
+    clearInterval(this.timer);
+
+    var values = this.state.task_name === this.state.var_taskName ?
+      '' : "task_name = '" + this.state.task_name + "'";
+    values += this.state.task_desc === this.state.var_taskDesc ?
+      '' : (values !== '' ? ', ' : "") + "task_description = '" + this.state.task_desc + "'";
+    values += this.state.task_dueDate === this.state.var_dueDate ?
+      '' : (values !== '' ? ', ' : "") + "due_date = " + (this.state.task_dueDate != '' ? "'" + this.state.task_dueDate + "'" : null) + " ";
+    values += (values !== '' ? ', ' : "") + "task_status = '" + this.state.task_status + "'"; 
+    
+    // alert(values); 
+    // values += this.state.task_dueDate === this.state.var_dueDate ?
+    // '' : "due_date = '" + this.state.task_dueDate + "' ";
+    // alert(values);
+
+    if (values != '') {
+      const url =
+        "http://" +
+        this.props.navigation.getParam("server_ip", "") +
+        "/dlgtd/controller/updateTaskController.php";
+      fetch(url, {
+        method: "post",
+        header: {
+          Accept: "application/json",
+          "Content-type": "applicantion/json"
+        },
+        body: JSON.stringify({
+          user_id: this.state.user_id,
+          task_id: this.props.navigation.getParam("task_id", "0"),
+          values: values,
+        })
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.error === true) {
+            alert("Something went wrong, please try again later." + values);
+          }
+        })
+        .catch(error => {
+          // alert(error + url);
+          alert("Please check your internet connection!");
+        });
+    }
     this.setState({
-      ip_server: server_ip,
-      user_id: user_id,
+      isLoading: true,
+      isModalVisible: false,
+      ip_server: "",
+      user_id: "",
+      taskContainer: [],
+      task_name: "",
+      var_taskName: "",
+      editTitle: false,
+      task_desc: "",
+      var_taskDesc: "",
+      editDesc: false,
+      task_dueDate: "",
+      var_dueDate: "",
+      editDue: false,
+      present_date: "",
+      date_created: "",
+      subTaskArray: [],
+      subTaskID: "",
+      subTaskName: "",
+      subTaskDesc: "",
+      subTaskDue: "",
     });
-  };
+  }
+
+  putSubTask = () => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/addSubTaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        task_id: this.props.navigation.getParam("task_id", "0"),
+        user_id: this.state.user_id,
+        subTask_name: this.state.subTaskName,
+        subTask_desc: this.state.subTaskDesc,
+        due_date: this.state.subTaskDue,
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        // alert(error + "Please check your internet connection!");
+      });
+  }
+
+  updateSubTask = () => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/updateSubtaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        subtask_id: this.state.subTaskID,
+        subtask_name: this.state.subTaskName,
+        subtask_desc: this.state.subTaskDesc,
+        due_date: this.state.subTaskDue
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          // alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        // alert(error + "Please check your internet connection!");
+      });
+  }
+
+  deleteTask = () => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/deleteTaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        task_id: this.props.navigation.getParam("task_id", "0")
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        alert(error + "Please check your internet connection!");
+      });
+
+    this.props.navigation.goBack();
+  }
 
   static navigationOptions = ({ navigation }) => {
     return {
@@ -211,19 +320,166 @@ class ViewSubtaskScreen extends React.Component {
           <Text>DLGTD</Text>
         </TouchableOpacity>
       ),
-      // headerRight: (
-      //   <View style={styles.rightNav}>
-      //     <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-      //       <Icon style={styles.navItem} name="notifications" size={25} />
-      //     </TouchableOpacity>
-      //   </View>
-      // )
+      headerRight: (
+        <View style={styles.rightNav}>
+          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+            <Icon style={styles.navItem} name="notifications" size={25} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon style={styles.navItem} name="account-circle" size={25} />
+          </TouchableOpacity>
+        </View>
+      )
     };
   };
 
+  _getAsyncData = async () => {
+    const server_ip = await AsyncStorage.getItem("server_ip");
+    const user_id = await AsyncStorage.getItem("user_id");
+    this.setState({
+      ip_server: server_ip,
+      user_id: user_id,
+    });
+  };
+
+  toggleModal = () => {
+    this.setState({
+      isModalVisible: false,
+      editSubTask: false,
+      subTaskID: '',
+      subTaskName: '',
+      subTaskDesc: '',
+      subTaskDue: ''
+    });
+  };
+
+  toggleTaskStatus = () => {
+    var temp = this.state.task_status == 'prioritize'? "active" : "prioritize";
+    this.setState({
+      task_status: temp
+    });
+  };
+
+  addSubTask() {
+
+    if (this.state.subTaskName !== '') {
+      this.putSubTask();
+      this.setState({ subTaskName: '', subTaskDesc: '', subTaskDue: '' });
+    } else {
+      Alert.alert(
+        'Oops!',
+        'Subtask name must be filled!',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+    this.setState({ isModalVisible: false });
+  }
+
+  editSubTask() {
+
+    if (this.state.subTaskName !== '') {
+      this.updateSubTask();
+      this.setState({ subTaskName: '', subTaskDesc: '', subTaskDue: '' });
+    } else {
+      Alert.alert(
+        'Oops!',
+        'Subtask name must be filled!',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+    this.setState({ editSubTask: false });
+  }
+
+  confirmDeleteTask() {
+    Alert.alert(
+      'Alert!',
+      'Are you sure you want to delete this task?',
+      [
+        { text: 'Yes', onPress: () => this.deleteTask() },
+        { text: 'No' },
+      ],
+      { cancelable: false },
+    );
+  }
+
+
+  deleteSubTask = (id) => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/deleteSubtaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        task_id: this.props.navigation.getParam("task_id", "0"),
+        subtask_id: id
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        // alert(error + "Please check your internet connection!");
+      });
+  }
+
+  checkSubTask = (id) => {
+    const url =
+      "http://" +
+      this.state.ip_server +
+      "/dlgtd/controller/checkSubtaskController.php";
+    fetch(url, {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "applicantion/json"
+      },
+      body: JSON.stringify({
+        subtask_id: id
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.error) {
+          alert(responseJson.response);
+        }
+      })
+      .catch(error => {
+        // alert(error + url);
+        // alert(error + "Please check your internet connection!");
+      });
+  }
+
+  // editSubTask(subtask_id) { 
+
   render() {
-    let lvl2tasks = this.state.taskContainer.map((val, key) => {
-      return <Lvl2Task key={key} keyval={key} val={val} />
+    const { navigation } = this.props;
+
+    let SubTasks = this.state.subTaskArray.map((val, key) => {
+      return <SubTask key={key} keyval={key} val={val}
+        checkSubtask={() => this.checkSubTask(val.subtask_id)}
+        deleteSubTask={() => this.deleteSubTask(val.subtask_id)}
+        editSubTask={() => this.setState({
+          editSubTask: true,
+          subTaskID: val.subtask_id,
+          subTaskName: val.subtask_name,
+          subTaskDesc: val.subtask_desc,
+          subTaskDue: val.due_date,
+        })} />
     });
 
     return this.state.isLoading ? (
@@ -231,15 +487,15 @@ class ViewSubtaskScreen extends React.Component {
         <ActivityIndicator size="large" color="tomato" animating />
       </View>
     ) : (
-        <ScrollView style={{ backgroundColor: "#ebf0f7" }}>
+        <ScrollView style={{backgroundColor: "#ebf0f7"}}>
           <Modal
             isVisible={this.state.isModalVisible}>
-            <View style={style2.modalContainer}>
+            <View style={styles.modalContainer}>
 
-              <View style={style2.modalHeader}>
-                <Text style={style2.modalTitle}>Subtask</Text>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Subtask</Text>
               </View>
-              <View style={style2.modalBody}>
+              <View style={styles.modalBody}>
                 <TextInput
                   autoFocus
                   onChangeText={(subTaskName) => this.setState({ subTaskName })}
@@ -251,11 +507,6 @@ class ViewSubtaskScreen extends React.Component {
                   value={this.state.subTaskDesc}
                   style={formsStyle.md_textInput_children}
                   placeholder="Description" />
-                <TextInput
-                  onChangeText={(subTaskAssign) => this.setState({ subTaskAssign })}
-                  value={this.state.subTaskAssign}
-                  style={formsStyle.md_textInput_children}
-                  placeholder="Email / User code" />
               </View>
 
               <DatePicker
@@ -284,161 +535,134 @@ class ViewSubtaskScreen extends React.Component {
                 }}
               />
 
-              <View style={style2.modalTabs}>
+              <View style={styles.modalTabs}>
                 <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.toggleModal}>
                   <Text>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }}>
-                {/* <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.addSubTask.bind(this)}> */}
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.addSubTask.bind(this)}>
                   <Text>Save</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </Modal>
+          <Modal
+            isVisible={this.state.editSubTask}>
+            <View style={styles.modalContainer}>
 
-          <View style={styles.formContainer}>
-            <Text style={styles.textHeader}>
-              {this.state.subtask_name}
-            </Text>
-            <Text style={styles.textSub}>
-              {this.state.subtask_desc != ""
-                ? this.state.subtask_desc
-                : "no description"}
-            </Text>
-            {this.state.assigned_to != "" ?
-              <Text style={styles.textSub}>
-                {this.state.full_name} ({this.state.assigned_to})
-              </Text> :
-              null}
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Edit Subtask</Text>
+              </View>
+              <View style={styles.modalBody}>
+                <TextInput
+                  autoFocus
+                  onChangeText={(subTaskName) => this.setState({ subTaskName })}
+                  value={this.state.subTaskName}
+                  style={formsStyle.md_textInput_header}
+                  placeholder="Subtask name" />
+                <TextInput
+                  onChangeText={(subTaskDesc) => this.setState({ subTaskDesc })}
+                  value={this.state.subTaskDesc}
+                  style={formsStyle.md_textInput_children}
+                  placeholder="Description" />
+              </View>
 
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <DatePicker
+                  style={{ width: 200 }}
+                  mode="datetime"
+                  date={this.state.subTaskDue}
+                  placeholder="Pick a date"
+                  format="YYYY-MM-DD HH:mm"
+                  minDate={this.state.present_date}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      position: "absolute",
+                      left: 0,
+                      top: 4,
+                      marginLeft: 0
+                    },
+                    dateInput: {
+                      marginLeft: 36
+                    }
+                  }}
+                  minuteInterval={10}
+                  onDateChange={subTaskDue => {
+                    this.setState({ subTaskDue: subTaskDue });
+                  }}
+                />
 
-            <TouchableOpacity style={styles.deleteTaskButton}>
-              <Icon name="close" size={30} />
+                <TouchableOpacity style={{ marginLeft: 7 }} onPress={() => this.setState({subTaskDue: ''})}>
+                  <Icon_2 name="calendar-remove" size={30} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.modalTabs}>
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.toggleModal}>
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={this.editSubTask.bind(this)}>
+                  <Text>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <View style={formsStyle.formContainer}>
+            <TaskTitleLabel
+              editTitle={this.state.editTitle}
+              task_name={this.state.task_name}
+              onChangeTaskName={(task_name) => {
+                this.setState({ task_name });
+              }}
+              onBack={() => {
+                this.setState({ editTitle: false });
+              }}
+              onClick={() => {
+                this.setState({ editTitle: true });
+              }}
+            />
+            <DescLabel
+              editDesc={this.state.editDesc}
+              description={this.state.task_desc}
+              onChangeDesc={(task_desc) => {
+                this.setState({ task_desc });
+              }}
+              onBackDesc={() => {
+                this.setState({ editDesc: false });
+              }}
+              onClickDesc={() => {
+                this.setState({ editDesc: true });
+              }}
+            />
+            <DateCreatedLabel created_at={this.state.date_created} />
+            <DueDateLabel editDue={this.state.editDue} task_dueDate={this.state.task_dueDate}
+              present_date={this.state.present_date} editDue={this.state.editDue}
+              updateEditDue={() => {
+                this.setState({ editDue: false });
+              }}
+              setDueDate={task_dueDate => {
+                this.setState({ task_dueDate: task_dueDate, editDue: false });
+              }}
+              removeDueDate={() => {
+                this.setState({ task_dueDate: '', editDue: false })
+              }}
+              editDueDate={() => this.setState({ editDue: true })} />
+
+            <TouchableOpacity style={styles.deleteTaskButton}
+              onPress={this.confirmDeleteTask.bind(this)}>
+              <Icon name="delete" size={30} />
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => this.setState({ isModalVisible: true })}>
-              <Icon2 name="ios-add" size={30} color="#fff" />
+            <TouchableOpacity style={styles.prioritizeButton} onPress={this.toggleTaskStatus}>
+              <Icon name={this.state.task_status == 'prioritize'? "star" : "star-border"} size={30} color={this.state.task_status == 'prioritize'?"#f1c40f": "#000"}/>
+              {/* <Icon name="star-border" size={30}/> */}
             </TouchableOpacity>
+            <AddSubTaskButton addSubTask={() => this.setState({ isModalVisible: true })} />
           </View>
-          {lvl2tasks}
+          {SubTasks}
         </ScrollView>
       );
   }
 }
 
 export default ViewSubtaskScreen;
-
-const styles = StyleSheet.create({
-  deleteTaskButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-  addButton: {
-    position: 'absolute',
-    zIndex: 11,
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#e91e63',
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8,
-  },
-  formContainer: {
-    flex: 1,
-    alignContent: "center",
-    paddingTop: 35,
-    paddingBottom: 35,
-    paddingLeft: 20,
-    paddingRight: 20,
-    // backgroundColor: "#1B811B",
-    backgroundColor: "#00BFFF",
-  },
-
-  textHeader: {
-    fontSize: 31,
-    color: "#ffffff"
-  }, textSub: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: "#ffffff"
-  },
-  textLabel: {
-    fontSize: 14,
-    color: "#ffffff"
-  },
-  row2style: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  valContainer: {
-    flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: "#ffffff"
-  },
-  textInput: {
-    borderColor: "#ffffff",
-    color: "#ffffff",
-    borderWidth: 1,
-    borderRadius: 10,
-    fontSize: 25,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 10,
-    marginBottom: 10
-  },
-  textInputChildren: {
-    borderColor: "#ffffff",
-    color: "#ffffff",
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 5,
-    fontSize: 16,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 10,
-    marginBottom: 10
-  },
-  saveButton: {
-    borderWidth: 1,
-    borderColor: "white",
-    backgroundColor: "#007bff",
-    borderRadius: 50,
-    padding: 15,
-    marginTop: 15
-  },
-  saveButtonText: {
-    color: "#ffffff",
-    fontSize: 20,
-    textAlign: "center"
-  },
-  md_textInput_header: {
-    borderColor: "#000",
-    color: "#000",
-    borderWidth: 1,
-    borderRadius: 10,
-    fontSize: 20,
-    padding: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  md_textInput_children: {
-    borderColor: "#000",
-    color: "#000",
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 5,
-    fontSize: 16,
-    padding: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 10,
-    marginBottom: 10
-  },
-});

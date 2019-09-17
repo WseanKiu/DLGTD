@@ -10,7 +10,7 @@ import { Badge, Slider } from 'react-native-elements';
 import Bar from "react-native-progress/Bar";
 import Icon from "react-native-vector-icons/Ionicons";
 
-export default class GroupSubTask extends Component {
+export default class Lvl1Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,9 +26,22 @@ export default class GroupSubTask extends Component {
 
     render() {
         return (
+            // <TouchableOpacity key={this.props.keyval} style={styles.card}
             <TouchableOpacity key={this.props.keyval} style={styles.card}
+                onPress={() => this.props.navigation.navigate('ViewLvl2Task', { subtask_id: this.props.val.subtask_id, creator: this.props.creator })}
                 onLongPress={this.props.creator ? this.props.editSubTask : null} activeOpacity={0.6}>
+                {
+                    this.props.val.total_progress == 0?
+                    <TouchableOpacity
+                        onPress={this.props.checkTask}
+                        style={{ paddingTop: 5, paddingLeft: 10 }}>
+                        <Icon name={this.props.val.status == 'finished'?
+                            "md-checkmark-circle-outline"
+                            :"md-radio-button-off"} size={25}/>
+                    </TouchableOpacity> : null
+                }
                 <View style={styles.cardContent}>
+                    
                     <Text style={styles.description}>{this.props.val.subtask_name}</Text>
                     {this.props.val.subtask_desc != ''? 
                     <Text style={styles.description}>{this.props.val.subtask_desc}</Text>
@@ -58,17 +71,22 @@ export default class GroupSubTask extends Component {
                             : null
                     }
 
-                    {this.props.val.user_id == this.props.user_id ?
+                    {/* {this.props.val.user_id == this.props.user_id ?
                         <View>
                             <Slider
                                 onSlidingComplete={this.props.updateProgress}
                                 value={parseFloat(this.props.val.progress)}
                                 onValueChange={(value) => this.setState({ progress: value })}
                             />
-                            {/* <Text>progress: {this.state.progress}</Text> */}
                         </View> :
                         <Bar style={{ marginVertical: 10 }} progress={this.props.val.progress} width={null} />
+                    } */}
+                    {
+                        this.props.val.total_progress > 0?
+                        <Bar style={{ marginTop: 10 }} progress={this.props.val.progress/this.props.val.total_progress} width={null} />
+                        : null
                     }
+                    
                     {this.props.creator ?
                         <TouchableOpacity style={styles.taskDelete} onPress={this.props.deleteSubTask}>
                             <Icon style={{ marginRight: 10 }} name="md-close" size={25} />
@@ -155,11 +173,11 @@ const styles = StyleSheet.create({
         // shadowOpacity: 0.37,
         // shadowRadius: 7.49,
         // elevation: 12,
-
+        alignItems: 'center',
         marginVertical: 5,
+        paddingBottom: 15,
         marginHorizontal: 10,
-        backgroundColor: "white",
-        flexBasis: '46%',
+        backgroundColor: "#fff",
         padding: 5,
         flexDirection: 'row',
         flexWrap: 'wrap',

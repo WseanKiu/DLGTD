@@ -19,9 +19,10 @@ import GroupTaskScreen from './src/components/pages/GroupTaskScreen';
 import ViewTaskScreen from './src/components/pages/ViewTaskScreen';
 import AddGrouptaskScreen from './src/components/pages/AddGroupTaskScreen';
 import ViewGroupTaskScreen from './src/components/pages/ViewGroupTaskScreen';
-import ViewSubtaskScreen from './src/components/pages/ViewSubtaskScreen';
+import ViewLvl2Task from './src/components/helpers/lvl2Task/ViewLvl2Task';
 import ProfileScreen from './src/components/pages/ProfileScreen';
 import editProfileScreen from './src/components/pages/editProfileScreen';
+import ChangePassScreen from './src/components/pages/ChangePassScreen';
 import ThankU4SubsScreen from './src/components/pages/ThankU4SubsScreen';
 
 const AppStack = createStackNavigator(
@@ -38,7 +39,7 @@ const GroupStack = createStackNavigator(
         GroupTaskScreen: { screen: GroupTaskScreen },
         ViewGroupTaskScreen: { screen: ViewGroupTaskScreen },
         AddGroupTask: { screen: AddGrouptaskScreen },
-        ViewSubtask: { screen: ViewSubtaskScreen }
+        ViewLvl2Task: { screen: ViewLvl2Task }
     }
 );
 
@@ -46,7 +47,7 @@ const ProfileStack = createStackNavigator(
     {
         Profile: { screen: ProfileScreen },
         EditProfile: { screen: editProfileScreen},
-        // Subscription: { screen: SubscriptionScreen },
+        ChangePassword: { screen: ChangePassScreen },
         ThankYou: { screen: ThankU4SubsScreen }
     }
 );
