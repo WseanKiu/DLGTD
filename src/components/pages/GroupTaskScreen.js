@@ -83,34 +83,47 @@ class GroupTaskScreen extends Component {
         const task_id = item.task_id;
         return (
             <TouchableOpacity
-                onPress={() => {
+                onPress={() => { 
                     this.props.navigation.navigate("ViewGroupTaskScreen", { task_id: task_id, server_ip: this.state.ip_server, task_creator: this.state.user_id == item.user_id? true : false });
                 }}
                 style={{
-                    flex: 1,
-                    paddingTop: 10,
-                    paddingLeft: 30,
-                    paddingRight: 30,
-                    paddingBottom: 2
+                    // flex: 1,
+                    // paddingTop: 10,
+                    // marginHorizontal: 30,
+                    // // paddingRight: 30,
+                    // paddingBottom: 10
+
+        //   flex: 1,
+          paddingTop: 10,
+          paddingLeft: 30,
+          paddingRight: 30,
+          paddingBottom: 10,
+          marginLeft: 20,
+          marginRight: 20,
+          marginVertical: 5,
+          backgroundColor: "white",
+        //   flexDirection: 'row',
+          borderRadius: 10,
                 }}>
 
                 <View style={{ flex: 1, alignContent: "center" }}>
                     <View style={{ flexDirection: 'row', alignContent: 'center' }}>
                         {item.task_status == 'prioritize' ? <Icon name="star" size={25} color="#f1c40f" /> : null}
-                        <Text style={{ fontSize: 20, color: "green" }}>{item.title}</Text>
+                        <Text style={{ fontSize: 20, color: "#008a00", fontWeight: '600' }}>{item.title}</Text>
                     </View>
-                    {item.desc != "" ? (
-                        <Text>{item.desc}</Text>
+                    <Text style={{color: "#8e8e93", paddingVertical: 5}}>Members {item.total_members}</Text>
+                    {/* {item.desc != "" ? (
+                        <Text style={{color: "#8e8e93"}}>{item.desc}</Text>
                     ) : (
-                            <Text>no description</Text>
-                        )}
+                            <Text style={{color: "#8e8e93"}}>no description</Text>
+                        )} */}
                 </View>
 
                 {
                     item.due_date ?
                     <View style={{ flexDirection: 'row' }}>
                         <Icon_2 name="calendar-clock" size={18} color="#e74c3c" />
-                        <Text style={{ fontSize: 10, paddingLeft: 5, alignSelf: 'center', paddingBottom: 10 }}>{item.due_date}</Text>
+                        <Text style={{ fontSize: 10, paddingLeft: 5, alignSelf: 'center', paddingBottom: 10, color: "#696969"}}>{item.due_date}</Text>
                         {/* <Badge value={item.due_date} status='primary' /> */}
                     </View>
                     : null
@@ -152,10 +165,11 @@ class GroupTaskScreen extends Component {
 
     renderSeparator = () => {
         return (
-            <View
-                // style={{ height: 1, width: '100%', backgroundColor: 'black' }}>
-                style={{ height: 1, width: "100%" }}
-            />
+            // <View
+            //     // style={{ height: 1, width: '100%', backgroundColor: 'black' }}>
+            //     style={{ height: 1, width: "100%" }}
+            // />
+            <View style={{ height: 1}}/>
         );
     };
 

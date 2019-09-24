@@ -26,6 +26,7 @@ class ViewLvl2Task extends React.Component {
             isModalVisible: false,
             editLvl2task: false,
             creator: false,
+            assigned: false,
             server_ip: "",
             user_id: "",
             taskContainer: [],
@@ -56,7 +57,10 @@ class ViewLvl2Task extends React.Component {
     };
 
     componentDidMount() {
-        this.setState({ creator: this.props.navigation.getParam('creator') });
+        this.setState({
+            creator: this.props.navigation.getParam('creator'),
+            assigned: this.props.navigation.getParam('assigned'),
+        });
         this.timer = setInterval(() => {
 
             const url = "http://" +
@@ -191,12 +195,144 @@ class ViewLvl2Task extends React.Component {
             });
     }
 
+    deleteLvl2Task = (id) => {
+        // alert(id);
+        const url =
+            "http://" +
+            this.state.server_ip +
+            "/dlgtd/controller/deleteLvl2TaskController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                id: id
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+    }
+
+    prioritizeTask = () => {
+        const url =
+            "http://" +
+            this.state.server_ip +
+            "/dlgtd/controller/prioritizeTaskController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                subtask_id: this.props.navigation.getParam("subtask_id", "0"),
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+
+    }
+
+    pokeUser = () => {
+        const url =
+            "http://" +
+            this.state.server_ip +
+            "/dlgtd/controller/pokeUserController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+                subtask_id: this.props.navigation.getParam("subtask_id", "0"),
+                user_id: this.state.user_id
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+
+        this.props.navigation.goBack();
+    }
+
+    confirmDeleteLvl1Task = () => {
+
+        Alert.alert(
+            'Confirm!',
+            'Are you sure you want to delete this task?',
+            [
+                { text: 'Yes', onPress: () => this.deleteLvl1Task() },
+                { text: 'No' },
+            ],
+            { cancelable: false },
+        );
+        // alert('taskid: ' + this.props.navigation.getParam("task_id", "0") + 'subtask_id:' +this.props.navigation.getParam("subtask_id", "0"));
+    }
+
+    deleteLvl1Task = () => {
+        const url =
+            "http://" +
+            this.state.server_ip +
+            "/dlgtd/controller/deleteSubtaskController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+                subtask_id: this.props.navigation.getParam("subtask_id", "0")
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error) {
+                    alert(responseJson.response);
+                }
+            })
+            .catch(error => {
+                // alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+
+        this.props.navigation.goBack();
+    }
+
     render() {
         let Lvl2Tasks = this.state.taskContainer.map((val, key) => {
             return <Lvl2Task key={key} keyval={key} val={val}
                 creator={this.state.creator}
+                assigned={this.state.assigned}
                 checkSubtask={() => this.checkSubTask(val.id)}
-                deleteSubTask={() => this.deleteSubTask(val.id)}
+                deleteLvl2Task={() => this.deleteLvl2Task(val.id)}
                 editSubTask={() => this.setState({
                     //   editSubTask: true,
                     //   subTaskID: val.subtask_id,
@@ -252,16 +388,16 @@ class ViewLvl2Task extends React.Component {
                         {/* ACTION BUTTONS */}
                         {this.state.creator ?
                             <TouchableOpacity style={styles.deleteTaskButton}>
-                                <Icon name="close" size={30} />
+                                <Icon name="close" size={30} onPress={() => this.confirmDeleteLvl1Task()} />
                             </TouchableOpacity>
                             : null}
                         {this.state.creator ?
-                            <TouchableOpacity style={styles.prioritizeTaskButton}>
-                                <Icon name="star-border" size={30} />
+                            <TouchableOpacity style={styles.prioritizeTaskButton} onPress={() => this.prioritizeTask()}>
+                                <Icon name={this.state.task_status == 'prioritize' ? "star" : "star-border"} size={30} />
                             </TouchableOpacity>
                             : null}
                         {this.state.creator && this.state.assigned_to != null ?
-                            <TouchableOpacity style={styles.pokeButton}>
+                            <TouchableOpacity style={styles.pokeButton} onPress={() => this.pokeUser()}>
                                 <Icon2 name="hand-point-right" size={30} />
                             </TouchableOpacity>
                             : null}

@@ -15,7 +15,7 @@ export default StyleSheet.create({
     //BODY
     container: {
         flex: 1,
-        backgroundColor: "#ebf0f7",
+        backgroundColor: "#ecf0f1",
         // alignItems: 'center',
         // alignContent: 'center',
     },    
@@ -32,7 +32,8 @@ export default StyleSheet.create({
     },
     notifContainer: {
         padding:10,
-        marginTop:5,
+        marginTop: 5,
+        paddingTop: 18,
         marginBottom:5,
         backgroundColor: '#FFFFFF',
         borderRadius:10,
@@ -54,7 +55,8 @@ export default StyleSheet.create({
 
     notifText: {
         color: '#2c3e50',
-        fontSize: 14
+        fontSize: 15,
+        maxWidth: 280
     },
 
     notifBtnAccept: {

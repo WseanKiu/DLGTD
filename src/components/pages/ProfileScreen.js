@@ -7,13 +7,14 @@ import {
     View,
     Modal,
     WebView,
-    Image,
+    TextInput,
     ScrollView,
     TouchableOpacity
 } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import DlgtdLogo from "../../assets/logo/DlgtdLogo";
 import styles2 from "../styles/style";
+import formsStyle from '../styles/formsStyle';
 import { Avatar } from "react-native-elements";
 
 export default class ProfileScreen extends Component {
@@ -34,6 +35,8 @@ export default class ProfileScreen extends Component {
             exp_date: "",
             showModal: false,
             status: "Pending",
+            showFeedback: false,
+            content: "",
         };
     }
 
@@ -68,7 +71,57 @@ export default class ProfileScreen extends Component {
     }
 
     componentDidMount() {
-        this.timer = setInterval(() => {
+        // this.timer = setInterval(() => {
+            // const url =
+            //     "http://" + this.state.ip_server + "/dlgtd/controller/getUserInfoController.php";
+            // fetch(url, {
+            //     method: "post",
+            //     header: {
+            //         Accept: "application/json",
+            //         "Content-type": "applicantion/json"
+            //     },
+            //     body: JSON.stringify({
+            //         user_id: this.state.user_id
+            //     })
+            // })
+            //     .then(response => response.json())
+            //     .then(responseJson => {
+            //         this.setState({
+            //             user_fname: responseJson.items[0].user_fname,
+            //             user_lname: responseJson.items[0].user_lname,
+            //             user_email: responseJson.items[0].user_email,
+            //             user_contacts: responseJson.items[0].user_contacts,
+            //             user_bdate: responseJson.items[0].user_bdate,
+            //             user_premium: responseJson.items[0].premium,
+
+            //             // user_email: responseJson.items[0].user_email,
+            //             // user_address: responseJson.items[0].user_address,
+            //             // user_bdate: responseJson.items[0].user_bdate,
+            //             // user_fname: responseJson.items[0].user_fname,
+            //             // user_lname: responseJson.items[0].user_lname,
+            //             // user_contacts: responseJson.items[0].user_contacts,
+            //             // user_premium: responseJson.items[0].premium,
+            //             // exp_date: responseJson.items[0].exp_date ? responseJson.items[0].exp_date : "",
+            //             // taskContainer: responseJson.items,
+            //             isLoading: false
+            //         });
+            //     })
+            //     .catch(error => {
+            //         alert(error + url);
+            //     });
+        // }, 1000);
+    }
+    _getAsyncData = async () => {
+        const user_id = await AsyncStorage.getItem("user_id");
+        const server_ip = await AsyncStorage.getItem("server_ip");
+        const user_code = await AsyncStorage.getItem("user_code");
+        this.setState({
+            ip_server: server_ip,
+            user_id: user_id,
+            user_code: user_code
+        });
+        
+        // this.timer = setInterval(() => {
             const url =
                 "http://" + this.state.ip_server + "/dlgtd/controller/getUserInfoController.php";
             fetch(url, {
@@ -84,39 +137,36 @@ export default class ProfileScreen extends Component {
                 .then(response => response.json())
                 .then(responseJson => {
                     this.setState({
-                        user_email: responseJson.items[0].user_email,
-                        user_address: responseJson.items[0].user_address,
-                        user_bdate: responseJson.items[0].user_bdate,
                         user_fname: responseJson.items[0].user_fname,
                         user_lname: responseJson.items[0].user_lname,
+                        user_email: responseJson.items[0].user_email,
                         user_contacts: responseJson.items[0].user_contacts,
+                        user_bdate: responseJson.items[0].user_bdate,
                         user_premium: responseJson.items[0].premium,
-                        exp_date: responseJson.items[0].exp_date?responseJson.items[0].exp_date:"",
+
+                        // user_email: responseJson.items[0].user_email,
+                        // user_address: responseJson.items[0].user_address,
+                        // user_bdate: responseJson.items[0].user_bdate,
+                        // user_fname: responseJson.items[0].user_fname,
+                        // user_lname: responseJson.items[0].user_lname,
+                        // user_contacts: responseJson.items[0].user_contacts,
+                        // user_premium: responseJson.items[0].premium,
+                        // exp_date: responseJson.items[0].exp_date ? responseJson.items[0].exp_date : "",
                         // taskContainer: responseJson.items,
                         isLoading: false
                     });
                 })
                 .catch(error => {
-                    // alert(error + url);
+                    alert(error + url);
                 });
-        }, 1000);
-    }
-    _getAsyncData = async () => {
-        const user_id = await AsyncStorage.getItem("user_id");
-        const server_ip = await AsyncStorage.getItem("server_ip");
-        const user_code = await AsyncStorage.getItem("user_code");
-        this.setState({
-            ip_server: server_ip,
-            user_id: user_id,
-            user_code: user_code
-        });
+        // }, 1000);
     };
 
     handleResponse = data => {
         if (data.title === "success") {
+            this.setState({ showModal: false, status: "Complete" });
             this.subscribeUser();
             this.props.navigation.navigate('ThankYou');
-            this.setState({ showModal: false, status: "Complete" });
         } else if (data.title === "cancel") {
             this.setState({ showModal: false, status: "Cancelled" });
         } else {
@@ -124,9 +174,40 @@ export default class ProfileScreen extends Component {
         }
     };
 
-    subscribeUser() {
+    sendFeedBack() {
+
+        // alert('sfsd?f');
         const url =
-            "http://" + this.state.ip_server + "/dlgtd/controller/subscribeUserController.php";
+            "http://" + this.state.ip_server + "/dlgtd/controller/sendFeedbackController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                user_id: this.state.user_id,
+                content: this.state.content
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+            })
+            .catch(error => {
+                alert(error + url);
+            });
+
+            this.setState({
+                showFeedback: false
+            });
+
+            // this.props.navigation.navigate('EditProfile');
+    }
+
+    subscribeUser() {
+        // const url =
+        //     "http://" + this.state.ip_server + "/dlgtd/controller/subscribeUserController.php";
+        const url = "http://" + this.state.ip_server + "/dlgtd/controller/getUserInfoController.php";
         fetch(url, {
             method: "post",
             header: {
@@ -161,8 +242,37 @@ export default class ProfileScreen extends Component {
                         onNavigationStateChange={data =>
                             this.handleResponse(data)
                         }
-                        injectedJavaScript={`document.f1.submit()`}
+                        injectedJavaScript={`document.getElementById('price').value="123";document.f1.submit()`}
                     />
+                </Modal>
+                <Modal
+                    visible={this.state.showFeedback}
+                    onRequestClose={() => this.setState({ showFeedback: false })}
+                >
+                    <View style={styles2.modalContainer}>
+                        <View style={styles2.modalHeader}>
+                            <Text style={styles2.modalTitle}>Create feedback</Text>
+                        </View>
+                        <View style={styles2.modalBody}>
+                            <TextInput
+                                onChangeText={(content) => this.setState({ content })}
+                                value={this.state.content}
+                                style={formsStyle.md_textInput_header}
+                                placeholder="Message..." />
+                        </View>
+                        <View style={styles2.modalTabs}>
+                            <TouchableOpacity
+                                onPress={() => this.setState({ showFeedback: false })}
+                                style={{ flex: 0.5, alignItems: 'center' }}>
+                                <Text>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.sendFeedBack.bind(this)}
+                                style={{ flex: 0.5, alignItems: 'center' }}>
+                                <Text>Send</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </Modal>
                 <View style={styles.container}>
                     <View style={styles.header}>
@@ -201,25 +311,32 @@ export default class ProfileScreen extends Component {
                             <Text style={styles.description}>Contact number: {this.state.user_contacts}</Text>
                             <Text style={styles.description}>Birthdate: {this.state.user_bdate}</Text>
                             {/* <Text style={styles.description}>Address: {this.state.user_address}</Text> */}
-                            { this.state.user_premium ? 
-                            <Text style={styles.description}>Subscription expire: {this.state.exp_date}</Text>
-                            : null }
+                            
+                            {/* {this.state.user_premium ?
+                                <Text style={styles.description}>Subscription expire: {this.state.exp_date}</Text>
+                                : null} */}
 
                             <TouchableOpacity style={styles.buttonContainer}
-                                onPress={() => this.props.navigation.navigate('EditProfile')}> 
+                                onPress={() => this.props.navigation.navigate('EditProfile')}>
                                 <Text>Edit profile</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonContainer}
-                                onPress={() => this.props.navigation.navigate('ChangePassword')}> 
+                                onPress={() => this.props.navigation.navigate('ChangePassword')}>
                                 <Text>Chance password</Text>
                             </TouchableOpacity>
                             {
                                 !this.state.user_premium ?
+                                    <TouchableOpacity style={styles.buttonContainer}
+                                        onPress={() => this.props.navigation.navigate('Subscription')}>
+                                        <Text>Subscribe to premium!</Text>
+                                    </TouchableOpacity>
+                                    : null
+                            }
+
                             <TouchableOpacity style={styles.buttonContainer}
-                                onPress={() => this.setState({ showModal: true })}>
-                                <Text>Subscribe to premium</Text>
+                                onPress={() => this.setState({ showFeedback: true }) }>
+                                <Text>Create feedback</Text>
                             </TouchableOpacity>
-                            : null }
                         </View>
                     </View>
                 </View>

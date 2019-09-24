@@ -380,7 +380,7 @@ class ViewGroupTaskScreen extends React.Component {
             ),
             headerRight: (
                 <View style={styles.rightNav}>
-                    <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Notification", { last_screen: "GroupTaskScreen" })}>
                         <Icon style={styles.navItem} name="notifications" size={25} />
                     </TouchableOpacity>
                 </View>
@@ -471,6 +471,48 @@ class ViewGroupTaskScreen extends React.Component {
             ],
             { cancelable: false },
         );
+    }
+
+    confirmArchive() {
+        Alert.alert(
+            'Archive!',
+            'Are you sure you want to move this task to archive?',
+            [
+                { text: 'Yes', onPress: () => this.putArchive() },
+                { text: 'No' },
+            ],
+            { cancelable: false },
+        );
+    }
+
+    putArchive = () => {
+        const url =
+            "http://" +
+            this.state.ip_server +
+            "/dlgtd/controller/putTaskArchiveController.php";
+        fetch(url, {
+            method: "post",
+            header: {
+                Accept: "application/json",
+                "Content-type": "applicantion/json"
+            },
+            body: JSON.stringify({
+                task_id: this.props.navigation.getParam("task_id", "0"),
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                // if (responseJson.error) {
+                //     alert(responseJson.response);
+                // }
+            })
+            .catch(error => {
+                alert(error + url);
+                // alert(error + "Please check your internet connection!");
+            });
+
+            this.setState({ task_status: 'archive' })
+            // this.props.navigation.goBack();
     }
 
     confirmDeleteSubtask = (id, subtask_name) => {
@@ -618,6 +660,7 @@ class ViewGroupTaskScreen extends React.Component {
             return <Lvl1Task key={key} keyval={key} val={val}
                 navigation={this.props.navigation}
                 checkTask={() => this.checkLvl1Task(val.subtask_id)}
+                task_id={this.props.navigation.getParam("task_id", "0")}
                 creator={this.state.creator}
                 user_id={this.state.user_id}
                 deleteSubTask={() => this.confirmDeleteSubtask(val.subtask_id, val.subtask_name)}
@@ -768,7 +811,11 @@ class ViewGroupTaskScreen extends React.Component {
                             <TouchableOpacity style={styles.prioritizeButton} onPress={this.toggleTaskStatus}>
                                 <Icon name={this.state.task_status == 'prioritize' ? "star" : "star-border"} size={30} color={this.state.task_status == 'prioritize' ? "#f1c40f" : "#000"} />
                             </TouchableOpacity>
-                            : null}
+                            :
+                            this.state.task_status == 'prioritize' ?
+                                <Icon name={this.state.task_status == 'prioritize' ? "star" : "star-border"} size={30} color={this.state.task_status == 'prioritize' ? "#f1c40f" : "#000"} />
+                                : null
+                        }
                         {this.state.creator ?
                             <TaskTitleLabel
                                 editTitle={this.state.editTitle}
@@ -826,7 +873,7 @@ class ViewGroupTaskScreen extends React.Component {
                                 {
                                     (moment(this.state.task_dueDate).isValid()) ?
                                         <View
-                                            style={formsStyle.row2style}>
+                                            style={[formsStyle.row2style, { marginVertical: 10 }]}>
                                             <Icon2 name="calendar-clock" size={25} color="#fff" />
                                             <Text style={formsStyle.valContainer}>
                                                 {this.state.task_dueDate}
@@ -836,6 +883,20 @@ class ViewGroupTaskScreen extends React.Component {
                                 }
                             </View>
                         }
+
+                        {
+                            (moment(this.state.task_dueDate).isValid()) ?
+
+                                <TouchableOpacity
+                                    style={formsStyle.row2style}
+                                    onPress={() => this.props.navigation.navigate("TaskCalendarScreen", { task_id: this.props.navigation.getParam("task_id", "0") })}>
+                                    <Icon2 name="calendar-multiselect" size={25} color="#fff" />
+                                    <Text style={formsStyle.valContainer}>
+                                        View calendar
+                                    </Text>
+                                </TouchableOpacity> : null
+                        }
+
                         {this.state.creator ?
                             <TouchableOpacity style={styles.deleteTaskButton}
                                 onPress={this.confirmDeleteTask.bind(this)}>
@@ -844,6 +905,19 @@ class ViewGroupTaskScreen extends React.Component {
                             : null}
                         {this.state.creator ?
                             <AddSubTaskButton addSubTask={() => this.setState({ isModalVisible: true })} />
+                            : null}
+
+
+                        {this.state.creator ?
+                            <TouchableOpacity
+                                onPress={() => this.confirmArchive()}
+                                style={{
+                                    position: 'absolute',
+                                    top: 10,
+                                    right: 50,
+                                }}>
+                                <Icon name="archive" size={30} />
+                            </TouchableOpacity>
                             : null}
                     </View>
                     {Lvl1Tasks}
