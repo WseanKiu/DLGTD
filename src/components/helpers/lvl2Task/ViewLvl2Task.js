@@ -121,6 +121,8 @@ class ViewLvl2Task extends React.Component {
                     alert(error + url2);
                 });
         }, 1000);
+
+        // alert(this.state.status + this.props.navigation.getParam("subtask_id", "0"));
     }
 
     addTask() {
@@ -391,11 +393,11 @@ class ViewLvl2Task extends React.Component {
                                 <Icon name="close" size={30} onPress={() => this.confirmDeleteLvl1Task()} />
                             </TouchableOpacity>
                             : null}
-                        {this.state.creator ?
+                        {/* {this.state.creator ?
                             <TouchableOpacity style={styles.prioritizeTaskButton} onPress={() => this.prioritizeTask()}>
-                                <Icon name={this.state.task_status == 'prioritize' ? "star" : "star-border"} size={30} />
+                                <Icon name={this.state.status == 'prioritize' ? "star" : "star-border"} size={30} />
                             </TouchableOpacity>
-                            : null}
+                            : null} */}
                         {this.state.creator && this.state.assigned_to != null ?
                             <TouchableOpacity style={styles.pokeButton} onPress={() => this.pokeUser()}>
                                 <Icon2 name="hand-point-right" size={30} />
@@ -433,7 +435,7 @@ const styles = StyleSheet.create({
     pokeButton: {
         position: 'absolute',
         top: 10,
-        left: 60,
+        left: 20,
     },
     addButton: {
         position: 'absolute',

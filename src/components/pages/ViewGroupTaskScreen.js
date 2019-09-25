@@ -767,7 +767,7 @@ class ViewGroupTaskScreen extends React.Component {
                                     onChangeText={(subTaskAssign) => this.setState({ subTaskAssign })}
                                     value={this.state.subTaskAssign}
                                     style={formsStyle.md_textInput_children}
-                                    placeholder="Email" />
+                                    placeholder="User code" />
                             </View>
 
                             <DatePicker

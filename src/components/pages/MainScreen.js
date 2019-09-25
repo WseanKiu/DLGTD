@@ -55,11 +55,11 @@ class MainScreen extends React.Component {
           <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
             {/* <Badge value="2" status='primary' /> */}
             <Icon style={styles.navItem} name="notifications" size={27} />
-            <Badge
+            {/* <Badge
               status="error"
               value="5"
               containerStyle={{ position: 'absolute', top: -4, right: 9 }}
-            />
+            /> */}
           </TouchableOpacity>
           {/* <TouchableOpacity>
             <Icon style={styles.navItem} name="account-circle" size={25} />

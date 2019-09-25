@@ -159,6 +159,8 @@ export default class ProfileScreen extends Component {
                 .catch(error => {
                     alert(error + url);
                 });
+
+                // alert("is user premium? " + this.state.user_premium);
         // }, 1000);
     };
 

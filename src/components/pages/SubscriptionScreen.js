@@ -74,7 +74,7 @@ class SubscriptionScreen extends Component {
                 });
             })
             .catch(error => {
-                alert(error + url + "wew");
+                // alert(error + url + "wew");
             });
     };
 
@@ -90,7 +90,7 @@ class SubscriptionScreen extends Component {
     };
 
     addPayment = () =>  {
-        alert(this.state.user_id + " " + this.state.payment_id);
+        // alert(this.state.user_id + " " + this.state.payment_id);
         const url =
             "http://" +
             this.state.server_ip +
